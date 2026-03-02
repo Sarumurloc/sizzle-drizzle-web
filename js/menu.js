@@ -45,18 +45,20 @@ function renderCategory(id, name) {
 
 function renderItem(categoryId, itemId, item) {
     const grid = document.getElementById(`grid-${categoryId}`);
+    if (!grid) return; // 防禦：如果找不到對應的分類容器就跳出
+
     const itemEl = document.createElement('div');
     itemEl.className = 'item-card';
     
-    // 嚴謹邏輯：計算最終價格
-    // 公式：原價 * (後台折扣率，若無則為1) * 哈佛社群折扣
-    const adminDiscount = item.is_discounted ? item.discount_rate : 1;
-    const finalPrice = (item.base_price * adminDiscount * currentCommunityDiscount).toFixed(2);
+    // 周全防禦：如果 Firebase 沒填價格，預設為 0，避免出現 NaN
+    const basePrice = item.base_price || 0;
+    const adminDiscount = item.is_discounted ? (item.discount_rate || 1) : 1;
+    const finalPrice = (basePrice * adminDiscount * currentCommunityDiscount).toFixed(2);
 
     itemEl.innerHTML = `
-        <h3>${item.name}</h3>
+        <h3>${item.name || 'Unnamed Dish'}</h3>
         <p class="price-tag">Price: $${finalPrice}</p>
-        <p class="stock-tag">Stock: ${item.stock}</p>
+        <p class="stock-tag">Stock: ${item.stock ?? 'Out of stock'}</p>
         <button onclick="addToCart('${itemId}', '${item.name}', ${finalPrice})">Add to Order</button>
     `;
     grid.appendChild(itemEl);
