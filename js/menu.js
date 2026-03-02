@@ -1,93 +1,49 @@
-import { db } from './firebase-config.js';
-import { checkHarvardDiscount } from './auth.js'; // 1. 引入折扣偵測邏輯
-import { collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { db } from './firebase-config.js'; // 確保路徑正確
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// 全域變數：存儲當前哈佛社群折扣（預設 1.0 代表不打折）
-let currentCommunityDiscount = 1.0;
-
-// --- 核心邏輯：從 Firebase 抓取菜單 ---
 async function fetchMenu() {
-    try {
-        const menuContainer = document.getElementById('menu-container');
-        menuContainer.innerHTML = ''; // 清空現有內容，避免重複渲染
+    const menuContainer = document.getElementById('menu-container');
+    const menuSnapshot = await getDocs(collection(db, "menu"));
 
-        // 明確的範圍：確保 01_fresh_produce 在 02_chinese_dishes 之前
-        const menuQuery = query(collection(db, "menu"), orderBy("__name__"));
-        const menuSnapshot = await getDocs(menuQuery);
+    for (const categoryDoc of menuSnapshot.docs) {
+        const categoryData = categoryDoc.data();
+        const categoryId = categoryDoc.id;
 
-        for (const categoryDoc of menuSnapshot.docs) {
-            const categoryData = categoryDoc.data();
-            const categoryId = categoryDoc.id;
+        // 建立分類區塊
+        const section = document.createElement('section');
+        section.className = 'menu-category';
+        section.innerHTML = `
+            <h2>${categoryData.display_name || categoryId}</h2>
+            <div class="items-grid" id="grid-${categoryId}"></div>
+        `;
+        menuContainer.appendChild(section);
+
+        // 抓取該分類下的 items 集合
+        const itemsSnapshot = await getDocs(collection(db, `menu/${categoryId}/items`));
+        const grid = document.getElementById(`grid-${categoryId}`);
+
+        itemsSnapshot.forEach((itemDoc) => {
+            const item = itemDoc.data();
+            const itemId = itemDoc.id;
             
-            renderCategory(categoryId, categoryData.display_name);
-
-            // 抓取子集合 items
-            const itemsRef = collection(db, `menu/${categoryId}/items`);
-            const itemsSnapshot = await getDocs(itemsRef);
+            // 嚴謹邏輯：防禦 NaN 錯誤
+            const basePrice = item.base_price || 0;
+            const itemCard = document.createElement('div');
+            itemCard.className = 'item-card';
             
-            itemsSnapshot.forEach((itemDoc) => {
-                renderItem(categoryId, itemDoc.id, itemDoc.data());
-            });
-        }
-    } catch (error) {
-        console.error("Error fetching menu: ", error);
-    }
-}
-
-// --- UI 渲染函數 ---
-function renderCategory(id, name) {
-    const container = document.getElementById('menu-container');
-    const section = document.createElement('section');
-    section.className = 'menu-section';
-    section.innerHTML = `<h2>${name}</h2><div class="items-grid" id="grid-${id}"></div>`;
-    container.appendChild(section);
-}
-
-function renderItem(categoryId, itemId, item) {
-    const grid = document.getElementById(`grid-${categoryId}`);
-    if (!grid) return; // 防禦：如果找不到對應的分類容器就跳出
-
-    const itemEl = document.createElement('div');
-    itemEl.className = 'item-card';
-    
-    // 周全防禦：如果 Firebase 沒填價格，預設為 0，避免出現 NaN
-    const basePrice = item.base_price || 0;
-    const adminDiscount = item.is_discounted ? (item.discount_rate || 1) : 1;
-    const finalPrice = (basePrice * adminDiscount * currentCommunityDiscount).toFixed(2);
-
-    itemEl.innerHTML = `
-        <h3>${item.name || 'Unnamed Dish'}</h3>
-        <p class="price-tag">Price: $${finalPrice}</p>
-        <p class="stock-tag">Stock: ${item.stock ?? 'Out of stock'}</p>
-        <button onclick="addToCart('${itemId}', '${item.name}', ${finalPrice})">Add to Order</button>
-    `;
-    grid.appendChild(itemEl);
-}
-
-// --- 監聽「Apply Discount」按鈕 ---
-// 這裡就是你提到的「連動折扣偵測」位置
-document.addEventListener('DOMContentLoaded', () => {
-    const verifyBtn = document.getElementById('verify-email');
-    if (verifyBtn) {
-        verifyBtn.addEventListener('click', () => {
-            const emailInput = document.getElementById('user-email');
-            const email = emailInput.value;
-
-            // 調用 auth.js 的邏輯進行邊界檢查
-            const discount = checkHarvardDiscount(email);
-            
-            if (discount < 1.0) {
-                currentCommunityDiscount = discount;
-                alert("🎉 Harvard Discount Applied! Prices updated.");
-                fetchMenu(); // 重新執行演算法，更新所有價格標籤
-            } else {
-                currentCommunityDiscount = 1.0;
-                alert("Standard pricing applied.");
-                fetchMenu();
-            }
+            itemCard.innerHTML = `
+                <h3>${item.name || 'Unnamed'}</h3>
+                <p class="price-tag">$${basePrice.toFixed(2)}</p>
+                <p class="stock-tag">Stock: ${item.stock || 0}</p>
+                <div style="margin-bottom: 10px;">
+                    <label>Qty: </label>
+                    <input type="number" id="qty-${itemId}" value="1" min="1" max="${item.stock || 99}" style="width: 50px; padding: 5px;">
+                </div>
+                <button onclick="window.handleAddToCart('${itemId}', '${item.name}', ${basePrice})">Add to Order</button>
+            `;
+            grid.appendChild(itemCard);
         });
     }
-    
-    // 初始載入菜單
-    fetchMenu();
-});
+}
+
+fetchMenu();
