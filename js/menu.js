@@ -1,94 +1,100 @@
-import { db } from './firebase-config.js'; 
-import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { db } from './firebase-config.js';
+import { collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+// --- 1. 核心邏輯：營養素字串拆解 (Regex Split) ---
+// 目的：將 "StarchMicronutrients" 拆成 ["Starch", "Micronutrients"]
+function formatNutrients(nutrientString) {
+    if (!nutrientString) return "";
+    
+    // 使用正規表達式在大寫字母前切開，並加上標籤 HTML
+    // 計算機思維：自動化處理減少人工標籤錄入錯誤
+    return nutrientString
+        .split(/(?=[A-Z])/) 
+        .map(tag => `<span class="nutrient-tag">${tag}</span>`)
+        .join('');
+}
+
+// --- 2. 獲取並渲染菜單 ---
 async function fetchMenu() {
     const menuContainer = document.getElementById('menu-container');
-    if (!menuContainer) return;
-
+    
     try {
-        const menuSnapshot = await getDocs(collection(db, "menu"));
-        menuContainer.innerHTML = ""; 
+        const q = query(collection(db, "menu"), orderBy("category_id", "asc"));
+        const querySnapshot = await getDocs(q);
+        
+        // 按照類別分組數據 (例如: 01. Fresh Produce, 02. Chef's Specials)
+        const categories = {};
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const catName = data.category_name || "General";
+            if (!categories[catName]) categories[catName] = [];
+            categories[catName].push({ id: doc.id, ...data });
+        });
 
-        for (const categoryDoc of menuSnapshot.docs) {
-            const categoryData = categoryDoc.data();
-            const categoryId = categoryDoc.id;
+        // 清空加載中文字
+        menuContainer.innerHTML = '';
 
+        // 遍歷類別並生成 HTML
+        for (const [catName, items] of Object.entries(categories)) {
             const section = document.createElement('section');
-            section.innerHTML = `
-                <h2 style="margin: 40px 0 20px 0; border-left: 5px solid #d9534f; padding-left: 15px;">
-                    ${categoryData.display_name || categoryId}
-                </h2>
-                <div class="items-grid" id="grid-${categoryId}"></div>
-            `;
-            menuContainer.appendChild(section);
+            section.className = 'menu-category';
+            
+            // 類別標題
+            section.innerHTML = `<h2 class="menu-section-title">${catName}</h2>`;
+            
+            // 建立 Grid 容器 (這會觸發 index.html 中的 .items-grid 樣式)
+            const grid = document.createElement('div');
+            grid.className = 'items-grid';
 
-            const itemsSnapshot = await getDocs(collection(db, `menu/${categoryId}/items`));
-            const grid = document.getElementById(`grid-${categoryId}`);
+            items.forEach(item => {
+                const isDiscounted = item.is_discounted;
+                const finalPrice = isDiscounted ? item.discount_price : item.price;
+                
+                // 處理營養素標籤
+                const nutrientHTML = formatNutrients(item.nutrients);
 
-            itemsSnapshot.forEach((itemDoc) => {
-                const item = itemDoc.data();
-                const itemId = itemDoc.id;
-                const basePrice = item.base_price || 0;
-                const stock = item.stock || 0; // 庫存數據抽象化
+                const card = `
+                    <div class="item-card ${item.stock <= 0 ? 'out-of-stock' : ''}">
+                        <div>
+                            <h3>${item.name}</h3>
+                            <div class="nutrient-container">
+                                ${nutrientHTML}
+                            </div>
+                            
+                            <div class="price-row">
+                                <span class="current-price">$${finalPrice.toFixed(2)}</span>
+                                ${isDiscounted ? `<span class="old-price">$${item.price.toFixed(2)}</span>` : ''}
+                                ${isDiscounted ? `<span style="font-size:10px; color:#d9534f; font-weight:bold;">SPECIAL!</span>` : ''}
+                            </div>
+                            
+                            <p style="font-size: 0.8rem; color: #888;">Availability: ${item.stock} in stock</p>
+                        </div>
 
-                // --- 嚴謹邏輯：打折與價格計算 ---
-                let priceHtml = "";
-                let finalPrice = basePrice;
-                if (item.is_discounted && item.discount_rate) {
-                    finalPrice = basePrice * item.discount_rate;
-                    priceHtml = `
-                        <span style="text-decoration: line-through; color: #999; font-size: 0.9em;">$${basePrice.toFixed(2)}</span>
-                        <span style="color: #d9534f; font-weight: bold; margin-left: 5px;">$${finalPrice.toFixed(2)}</span>
-                        <span class="discount-tag">Special!</span>
-                    `;
-                } else {
-                    priceHtml = `<span style="font-weight: bold;">$${basePrice.toFixed(2)}</span>`;
-                }
-
-                // --- 邊界處理：庫存狀態顯示 ---
-                let stockHtml = "";
-                const isOutOfStock = stock <= 0;
-                if (isOutOfStock) {
-                    stockHtml = `<span style="color: #d9534f; font-weight: bold;">🚫 Out of Stock</span>`;
-                } else if (stock <= 10) {
-                    stockHtml = `<span style="color: #f39c12; font-weight: bold;">⏳ Only ${stock} left!</span>`;
-                } else {
-                    stockHtml = `<span style="color: #666;">Stock: ${stock}</span>`;
-                }
-
-                // --- 營養標籤渲染 (保留先前優化) ---
-                let tagHtml = "";
-                if (item.nutrition_tags && typeof item.nutrition_tags === 'object') {
-                    Object.entries(item.nutrition_tags).forEach(([key, value]) => {
-                        if (value === true) tagHtml += `<span class="nutrition-badge">${key}</span>`;
-                    });
-                }
-
-                const itemCard = document.createElement('div');
-                itemCard.className = `item-card ${isOutOfStock ? 'out-of-stock' : ''}`;
-                itemCard.innerHTML = `
-                    <h3 style="margin:0;">${item.name}</h3>
-                    <div style="margin: 10px 0; min-height: 25px;">${tagHtml}</div>
-                    
-                    <div style="margin: 10px 0;">${priceHtml}</div>
-                    <div style="margin-bottom: 15px; font-size: 0.85em;">${stockHtml}</div>
-
-                    <div style="display:flex; gap:10px; align-items:center;">
-                        <input type="number" id="qty-${itemId}" value="1" min="1" max="${stock}" 
-                               ${isOutOfStock ? 'disabled' : ''} 
-                               style="width:45px; padding:8px; border:1px solid #ddd; border-radius:5px;">
-                        <button class="add-btn" 
-                                onclick="window.handleAddToCart('${itemId}', '${item.name.replace(/'/g, "\\'")}', ${finalPrice})"
-                                ${isOutOfStock ? 'disabled' : ''}
-                                style="${isOutOfStock ? 'background:#ccc; cursor:not-allowed;' : ''}">
-                            ${isOutOfStock ? 'Sold Out' : 'Add to Order'}
-                        </button>
+                        <div style="margin-top: 15px; display: flex; gap: 10px; align-items: center;">
+                            <input type="number" id="qty-${item.id}" value="1" min="1" max="${item.stock}" 
+                                   style="width: 45px; padding: 8px; border-radius: 6px; border: 1px solid #ddd;">
+                            <button class="add-btn" onclick="handleAddToCart('${item.id}', '${item.name}', ${finalPrice})">
+                                ADD TO ORDER
+                            </button>
+                        </div>
+                        
+                        <a href="science.html" style="font-size: 10px; color: #007bff; text-decoration: none; margin-top: 10px; display: block;">
+                            🔬 View Nutritional Analysis
+                        </a>
                     </div>
-                    <a href="science.html" style="margin-top:15px; font-size:0.8em; color:#007bff; text-decoration:none;">🔬 Nutritional Analysis</a>
                 `;
-                grid.appendChild(itemCard);
+                grid.innerHTML += card;
             });
+
+            section.appendChild(grid);
+            menuContainer.appendChild(section);
         }
-    } catch (error) { console.error("Error loading menu:", error); }
+
+    } catch (error) {
+        console.error("Error fetching menu:", error);
+        menuContainer.innerHTML = `<p style="color:red; text-align:center;">Failed to load menu. System error: ${error.message}</p>`;
+    }
 }
+
+// 初始化
 fetchMenu();
