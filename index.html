@@ -4,85 +4,244 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sizzle & Drizzle | Harvard Medical-Grade Cuisine</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
     <style>
-        :root { --primary-red: #d9534f; --primary-blue: #007bff; --bg-gray: #fcfcfc; }
-        body { font-family: 'Inter', sans-serif; margin: 0; background-color: var(--bg-gray); color: #333; }
-        
-        /* --- 修正後的導航列 --- */
+        :root {
+            --harvard-crimson: #A51C30; /* 哈佛官方紅 */
+            --slate-gray: #333E48;      /* 專業學術灰 */
+            --soft-white: #fcfcfc;
+            --medical-blue: #007bff;
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            margin: 0; padding: 0; 
+            background-color: var(--soft-white); 
+            color: var(--slate-gray); 
+            line-height: 1.6;
+        }
+
+        /* --- Navigation: 修正按鈕靠近問題 --- */
         .main-nav { 
             background: white; 
-            padding: 18px 40px; 
+            padding: 20px 60px; 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            box-shadow: 0 1px 10px rgba(0,0,0,0.05); 
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            border-bottom: 3px solid var(--harvard-crimson);
         }
-        .main-nav .logo { font-size: 1.4rem; font-weight: 800; color: var(--primary-red); }
+        .main-nav .logo { 
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem; 
+            font-weight: 700; 
+            color: var(--harvard-crimson); 
+            text-decoration: none;
+        }
         
-        /* 增加間距與樣式優化 */
         .nav-links { display: flex; align-items: center; }
         .nav-links a { 
             text-decoration: none; 
-            color: #555; 
+            color: var(--slate-gray); 
             font-weight: 600; 
-            font-size: 0.9rem;
-            margin-left: 30px; /* 增加間距解決太靠近的問題 */
-            transition: 0.2s;
-            padding: 8px 12px;
-            border-radius: 6px;
+            font-size: 0.95rem;
+            margin-left: 35px; /* 增加間距解決擠在一起的問題 */
+            transition: 0.3s;
+            padding: 8px 15px;
+            border-radius: 5px;
         }
-        .nav-links a:hover { color: var(--primary-red); background-color: #fff5f5; }
-        .nav-links a.active { color: var(--primary-red); }
+        .nav-links a:hover { 
+            color: var(--harvard-crimson); 
+            background-color: #f8f9fa;
+        }
+        .nav-links a.active { color: var(--harvard-crimson); }
 
-        .promo-banner { background: #fff3cd; padding: 12px; text-align: center; border-bottom: 1px solid #ffeeba; font-size: 0.95rem; }
+        /* --- Banner --- */
+        .promo-banner { 
+            background: #fff3cd; 
+            padding: 12px; 
+            text-align: center; 
+            border-bottom: 1px solid #ffeeba; 
+            font-size: 0.9rem; 
+            color: #856404;
+            font-weight: 600;
+        }
+
+        /* --- Menu Content --- */
+        #menu-container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
         
-        #menu-container { max-width: 1200px; margin: 0 auto; padding: 30px 20px; }
-        .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; }
-        
-        /* Checkout Section */
-        #group-order-summary { background: #fff; border: 2px dashed var(--primary-blue); padding: 30px; border-radius: 16px; margin: 40px auto; max-width: 700px; }
-        .info-group { margin-bottom: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .info-input { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.9rem; }
-        
-        #summary-text { background: #f8f9fa; padding: 20px; border-radius: 10px; font-family: monospace; white-space: pre-wrap; font-size: 0.95rem; }
-        .submit-btn { width: 100%; padding: 18px; background: var(--primary-red); color: white; border: none; border-radius: 10px; font-weight: 800; cursor: pointer; font-size: 1.1rem; margin-top: 20px; }
-        .disclaimer { text-align: center; font-size: 0.8rem; color: #777; margin-top: 15px; }
+        /* 頁面大標題風格 */
+        .page-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .page-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--slate-gray);
+            margin-bottom: 10px;
+        }
+        .page-header p {
+            color: #666;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* --- Checkout Section: 專業化與資料輸入 --- */
+        #group-order-summary { 
+            background: white; 
+            border: 1px solid #e1e4e8;
+            border-left: 5px solid var(--medical-blue); /* 醫療感側邊條 */
+            padding: 35px; 
+            border-radius: 12px; 
+            margin: 60px auto; 
+            max-width: 750px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            color: var(--slate-gray);
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        /* 輸入欄位樣式 */
+        .input-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 20px; 
+            margin-bottom: 25px; 
+        }
+        .input-field {
+            display: flex;
+            flex-direction: column;
+        }
+        .input-field label {
+            font-size: 0.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            color: #888;
+        }
+        .info-input { 
+            padding: 12px 15px; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+        .info-input:focus { 
+            border-color: var(--medical-blue); 
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+            outline: none; 
+        }
+
+        /* 訂單明細風格 */
+        #summary-text { 
+            background: #fdfdfd; 
+            padding: 20px; 
+            border: 1px solid #f0f0f0;
+            border-radius: 8px; 
+            font-family: 'Courier New', Courier, monospace; 
+            white-space: pre-wrap; 
+            font-size: 0.95rem; 
+            color: #444;
+        }
+
+        .submit-btn { 
+            width: 100%; 
+            padding: 20px; 
+            background: linear-gradient(135deg, var(--harvard-crimson), #821627);
+            color: white; 
+            border: none; 
+            border-radius: 10px; 
+            font-weight: 800; 
+            cursor: pointer; 
+            font-size: 1.2rem; 
+            margin-top: 25px; 
+            transition: 0.4s;
+            box-shadow: 0 6px 15px rgba(165, 28, 48, 0.3);
+        }
+        .submit-btn:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(165, 28, 48, 0.4);
+        }
+        .submit-btn:disabled { background: #cbd5e0; transform: none; box-shadow: none; cursor: not-allowed; }
+
+        .footer-note { 
+            text-align: center; 
+            font-size: 0.85rem; 
+            color: #999; 
+            margin-top: 20px; 
+            font-style: italic;
+        }
+
+        /* 手機版調整 */
+        @media (max-width: 600px) {
+            .input-grid { grid-template-columns: 1fr; }
+            .main-nav { padding: 15px 20px; }
+            .nav-links a { margin-left: 15px; font-size: 0.8rem; }
+        }
     </style>
 </head>
 <body>
 
     <nav class="main-nav">
-        <div class="logo">Sizzle & Drizzle</div>
+        <a href="index.html" class="logo">Sizzle & Drizzle</a>
         <div class="nav-links">
-            <a href="index.html" class="active">Menu</a>
+            <a href="index.html" class="active">Daily Menu</a>
             <a href="science.html">The Science</a>
         </div>
     </nav>
 
-    <div class="promo-banner">🎓 <strong>Harvard ID Holders:</strong> Show ID at pickup for <strong>10% OFF</strong>!</div>
+    <div class="promo-banner">
+        🎓 <strong>Academic Privilege:</strong> Show Harvard ID at pickup for <strong>10% Discount</strong>.
+    </div>
 
     <main id="menu-container">
+        <header class="page-header">
+            <h1>Precision Nutrition</h1>
+            <p>Curated by Harvard Medical researchers. Designed for cognitive performance and metabolic health.</p>
+        </header>
         </main>
 
     <section id="group-order-summary" style="display:none;">
-        <h3>📋 Finalize Your Order</h3>
-        <div class="info-group">
-            <input type="text" id="cust-id" class="info-input" placeholder="Your Name / ID" required>
-            <input type="tel" id="cust-phone" class="info-input" placeholder="Phone (e.g. 617-xxx-xxxx)" required>
+        <div class="section-title">Finalize Your Scientific Meal</div>
+        
+        <div class="input-grid">
+            <div class="input-field">
+                <label>Student/Faculty Name</label>
+                <input type="text" id="cust-id" class="info-input" placeholder="Full Name" required>
+            </div>
+            <div class="input-field">
+                <label>Contact Phone</label>
+                <input type="tel" id="cust-phone" class="info-input" placeholder="617-000-0000" required>
+            </div>
         </div>
+
         <pre id="summary-text"></pre>
-        <button id="submit-btn" onclick="window.submitOrder()" class="submit-btn">PLACE MY ORDER</button>
-        <div class="disclaimer">
-            *Chef starts preparing upon order confirmation.<br>
-            *Pricing: Standard Total vs. Harvard Special.
+        
+        <button id="submit-btn" onclick="window.submitOrder()" class="submit-btn">
+            CONFIRM & START COOKING
+        </button>
+        
+        <div class="footer-note">
+            *Chef starts preparation immediately after confirmation.<br>
+            Please settle payment and ID verification at the counter.
         </div>
     </section>
 
     <script type="module" src="js/menu.js"></script>
     <script type="module" src="js/cart.js"></script>
+
 </body>
 </html>
