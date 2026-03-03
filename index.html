@@ -15,6 +15,7 @@
             --soft-bg: #f8f9fa;
             --tag-bg: #eef2f7;
             --tag-text: #475569;
+            --card-shadow: 0 10px 25px rgba(0,0,0,0.05);
         }
 
         body { 
@@ -23,77 +24,93 @@
             color: var(--slate-gray); 
         }
 
-        /* --- Navigation --- */
+        /* --- Navigation: 修正按鈕靠近問題 --- */
         .main-nav { 
             background: white; padding: 15px 5%; 
             display: flex; justify-content: space-between; align-items: center; 
             position: sticky; top: 0; z-index: 1000; 
             border-bottom: 3px solid var(--harvard-crimson);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
         }
-        .logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--harvard-crimson); text-decoration: none; font-weight: 700; }
-        .nav-links a { text-decoration: none; color: var(--slate-gray); font-weight: 600; margin-left: 30px; font-size: 0.9rem; }
+        .logo { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--harvard-crimson); text-decoration: none; font-weight: 700; }
+        .nav-links a { text-decoration: none; color: var(--slate-gray); font-weight: 600; margin-left: 30px; font-size: 0.9rem; transition: 0.3s; }
+        .nav-links a:hover { color: var(--harvard-crimson); }
 
-        /* --- Layout --- */
+        /* --- Banner --- */
+        .promo-banner { 
+            background: #fff3cd; padding: 12px; text-align: center; 
+            border-bottom: 1px solid #ffeeba; font-size: 0.9rem; font-weight: 600; 
+        }
+
+        /* --- Main Layout: 解決右側留白與佈局問題 --- */
         .main-content {
             display: grid;
-            grid-template-columns: 1fr 380px; 
-            gap: 30px;
+            grid-template-columns: 1fr 380px; /* 左側菜單，右側固定訂單欄 */
+            gap: 40px;
             max-width: 1400px;
             margin: 0 auto;
             padding: 40px 5%;
         }
 
         @media (max-width: 1100px) {
-            .main-content { grid-template-columns: 1fr; }
+            .main-content { grid-template-columns: 1fr; } /* 手機版自動切換為單欄 */
         }
 
-        /* --- 卡片美化 --- */
+        /* --- 菜單卡片外觀優化 --- */
+        .menu-section-title {
+            font-family: 'Playfair Display', serif; font-size: 1.8rem;
+            margin: 40px 0 20px 0; border-left: 5px solid var(--harvard-crimson); padding-left: 15px;
+        }
+
         .items-grid { 
             display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
             gap: 25px; 
         }
 
         .item-card { 
             background: white; padding: 25px; border-radius: 16px; 
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-            border: 1px solid #eee; display: flex; flex-direction: column;
+            box-shadow: var(--card-shadow); border: 1px solid #eee;
+            display: flex; flex-direction: column; justify-content: space-between;
+            transition: transform 0.3s ease;
         }
+        .item-card:hover { transform: translateY(-5px); }
 
-        .item-card h3 { margin: 0 0 8px 0; font-size: 1.25rem; font-family: 'Playfair Display', serif; }
+        .item-card h3 { margin: 0 0 10px 0; font-family: 'Playfair Display', serif; font-size: 1.3rem; }
 
-        /* --- 修正：營養元素標籤 (Nutrient Tags) --- */
+        /* --- 修正：營養組成標籤 (Nutrient Tags) --- */
         .nutrient-container {
             display: flex;
-            flex-wrap: wrap; /* 自動換行，防止擠壓 */
+            flex-wrap: wrap; /* 自動換行 */
             gap: 6px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            min-height: 30px;
         }
 
         .nutrient-tag {
             background-color: var(--tag-bg);
             color: var(--tag-text);
             font-size: 10px; /* 縮小字體 */
-            font-weight: 700;
+            font-weight: 800;
             padding: 4px 10px;
             border-radius: 20px;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             border: 1px solid #e2e8f0;
             white-space: nowrap;
         }
 
         .nutrient-tag::before {
-            content: "•"; /* 圓點標記 */
+            content: "•"; /* 小圖示/圓點區隔 */
             color: var(--medical-blue);
-            margin-right: 4px;
+            margin-right: 5px;
             font-size: 14px;
         }
 
         /* --- 價格與按鈕 --- */
-        .price-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 15px; }
-        .current-price { font-size: 1.3rem; font-weight: 800; color: var(--harvard-crimson); }
-        .old-price { font-size: 0.85rem; text-decoration: line-through; color: #aaa; }
+        .price-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 15px; }
+        .current-price { font-size: 1.4rem; font-weight: 800; color: var(--harvard-crimson); }
+        .old-price { font-size: 0.9rem; text-decoration: line-through; color: #aaa; }
 
         .add-btn {
             background: var(--slate-gray); color: white; border: none;
@@ -102,17 +119,31 @@
         }
         .add-btn:hover { background: var(--harvard-crimson); }
 
-        /* --- 側邊欄 --- */
+        /* --- 右側訂單欄: Side Checkout --- */
         .order-sidebar {
             position: sticky; top: 100px; height: fit-content;
             background: white; padding: 30px; border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-            border-top: 5px solid var(--medical-blue);
+            box-shadow: var(--card-shadow); border-top: 5px solid var(--medical-blue);
         }
 
-        .info-input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-top: 5px; box-sizing: border-box; }
-        #summary-text { background: #f9f9f9; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 0.85rem; margin: 20px 0; border: 1px solid #eee; }
-        .submit-btn { width: 100%; padding: 18px; background: var(--harvard-crimson); color: white; border: none; border-radius: 10px; font-weight: 800; cursor: pointer; }
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; font-size: 0.75rem; font-weight: 800; color: #888; margin-bottom: 5px; text-transform: uppercase; }
+        .info-input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
+        .info-input:focus { border-color: var(--medical-blue); outline: none; box-shadow: 0 0 0 3px rgba(0,123,255,0.1); }
+
+        #summary-text { 
+            background: #f9f9f9; padding: 15px; border-radius: 8px; 
+            font-family: 'Courier New', monospace; font-size: 0.85rem; 
+            margin: 20px 0; border: 1px solid #eee; line-height: 1.4;
+        }
+
+        .submit-btn { 
+            width: 100%; padding: 18px; background: var(--harvard-crimson); 
+            color: white; border: none; border-radius: 10px; 
+            font-weight: 800; cursor: pointer; font-size: 1.1rem; transition: 0.3s;
+        }
+        .submit-btn:hover { background: #821627; }
+        .submit-btn:disabled { background: #ccc; cursor: not-allowed; }
 
     </style>
 </head>
@@ -126,28 +157,42 @@
         </div>
     </nav>
 
+    <div class="promo-banner">
+        🎓 <strong>Harvard ID Holders:</strong> Settle payment at pickup for 10% OFF.
+    </div>
+
     <div class="main-content">
         <div id="menu-area">
             <header style="margin-bottom: 40px;">
-                <h1 style="font-family: 'Playfair Display'; font-size: 2.2rem; margin: 0;">Precision Nutrition</h1>
-                <p style="color: #666;">Medical-grade ingredient analysis for optimal health.</p>
+                <h1 style="font-family: 'Playfair Display'; font-size: 2.5rem; margin-bottom: 10px;">Precision Nutrition</h1>
+                <p style="color: #666; font-size: 1.1rem;">Medical-grade ingredient analysis for optimal cognitive performance.</p>
             </header>
+            
             <div id="menu-container">
-                </div>
+                <p style="text-align: center; padding: 50px; color: #999;">Synchronizing with Kitchen...</p>
+            </div>
         </div>
 
         <aside class="order-sidebar" id="group-order-summary" style="display:none;">
-            <h2 style="font-family: 'Playfair Display'; margin-top: 0;">Your Order</h2>
-            <div style="margin-bottom: 15px;">
-                <label style="font-size: 0.75rem; font-weight: bold; color: #888;">IDENTIFICATION</label>
-                <input type="text" id="cust-id" class="info-input" placeholder="Name / Harvard ID">
+            <h2 style="font-family: 'Playfair Display'; margin: 0 0 25px 0;">Your Order</h2>
+            
+            <div class="input-group">
+                <label>Name / Harvard ID</label>
+                <input type="text" id="cust-id" class="info-input" placeholder="John Doe">
             </div>
-            <div style="margin-bottom: 15px;">
-                <label style="font-size: 0.75rem; font-weight: bold; color: #888;">CONTACT PHONE</label>
-                <input type="tel" id="cust-phone" class="info-input" placeholder="617-XXX-XXXX">
+            
+            <div class="input-group">
+                <label>Contact Phone</label>
+                <input type="tel" id="cust-phone" class="info-input" placeholder="617-000-0000">
             </div>
+
             <pre id="summary-text"></pre>
-            <button id="submit-btn" onclick="window.submitOrder()" class="submit-btn">PLACE MY ORDER</button>
+            
+            <button id="submit-btn" onclick="window.submitOrder()" class="submit-btn">CONFIRM & PREPARE</button>
+            
+            <p style="font-size: 0.75rem; color: #999; text-align: center; margin-top: 15px;">
+                *Chef starts preparation upon order confirmation.
+            </p>
         </aside>
     </div>
 
