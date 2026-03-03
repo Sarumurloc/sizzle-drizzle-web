@@ -3,69 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sizzle & Drizzle | Scientific Taiwanese Cuisine by Harvard Medic</title>
+    <title>Sizzle & Drizzle | Order Now</title>
     <style>
-        /* Base styles & Layout */
         body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding: 0; color: #333; background-color: #fafafa; scroll-behavior: smooth; }
         
-        /* Hero Section */
-        #hero-section { 
-            height: 70vh; 
-            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=2000') center/cover; 
-            display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center;
+        /* Navigation - Explicit Scope */
+        .main-nav { 
+            background: white; padding: 15px 30px; display: flex; justify-content: space-between; 
+            align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
         }
-        #hero-section h1 { font-size: 4em; margin-bottom: 10px; }
-        .order-trigger-btn { background: #d9534f; color: white; padding: 15px 40px; font-size: 1.2em; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .main-nav a { text-decoration: none; color: #555; font-weight: bold; margin-left: 20px; transition: 0.3s; }
+        .main-nav a:hover { color: #d9534f; }
+        .main-nav a.active { color: #d9534f; border-bottom: 2px solid #d9534f; }
 
-        /* Category Navigation (Sticky) */
-        #category-nav { 
-            text-align: center; padding: 15px; background: white; 
-            position: sticky; top: 0; z-index: 100; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            display: flex; justify-content: center; flex-wrap: wrap; gap: 10px;
-        }
-        .nav-btn { 
-            padding: 10px 25px; border-radius: 25px; border: 1.5px solid #d9534f; 
-            background: white; color: #d9534f; cursor: pointer; font-weight: bold; transition: 0.3s;
-        }
+        /* Hero & Category Styles - Consistent with previous version */
+        #hero-section { height: 60vh; background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=2000') center/cover; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; }
+        #category-nav { text-align: center; padding: 15px; background: white; position: sticky; top: 60px; z-index: 99; display: flex; justify-content: center; gap: 10px; border-bottom: 1px solid #eee; }
+        .nav-btn { padding: 8px 20px; border-radius: 20px; border: 1.5px solid #d9534f; background: white; color: #d9534f; cursor: pointer; font-weight: bold; }
         .nav-btn.active { background: #d9534f; color: white; }
 
-        /* Order Section Content */
-        #order-system-section { display: none; padding: 40px 20px; max-width: 1100px; margin: 0 auto; }
-        .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; margin-top: 20px; }
-        .item-card { background: white; border: 1px solid #eee; padding: 25px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .price-tag { font-size: 1.3em; font-weight: bold; color: #d9534f; }
-        
-        /* Summary UI */
-        #group-order-summary { background: white; border: 2px dashed #007bff; padding: 30px; border-radius: 15px; margin-top: 50px; }
-        #summary-text { background: #f8f9fa; padding: 20px; border: 1px solid #ddd; white-space: pre-wrap; font-family: monospace; border-radius: 8px; }
-        .copy-btn { background: #28a745; color: white; width: 100%; border: none; padding: 15px; border-radius: 8px; font-size: 1.2em; font-weight: bold; cursor: pointer; margin-top: 15px; }
+        /* Nutrition Badges - New UI Abstraction */
+        .nutrition-badge { display: inline-block; font-size: 0.75rem; padding: 2px 8px; border-radius: 4px; margin-right: 5px; font-weight: bold; }
+        .badge-cal { background: #fff3e0; color: #ef6c00; }
+        .badge-protein { background: #e3f2fd; color: #1565c0; }
+
+        .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding: 20px; }
+        .item-card { background: white; border: 1px solid #eee; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
     </style>
 </head>
 <body>
 
+    <nav class="main-nav">
+        <div style="font-size: 1.5em; font-weight: bold; color: #d9534f;">Sizzle & Drizzle</div>
+        <div>
+            <a href="index.html" class="active">Menu</a>
+            <a href="science.html">Our Science</a>
+        </div>
+    </nav>
+
     <header id="hero-section">
         <h1>Sizzle & Drizzle</h1>
-        <p>Scientific Taiwanese cooking. Redefining your campus lunch.</p>
-        <button class="order-trigger-btn" onclick="window.toggleOrderSystem()">Order Now 🛒</button>
+        <p>Scientific Taiwanese Cuisine designed by Harvard Medical staff.</p>
+        <button onclick="window.toggleOrderSystem()" style="background:#d9534f; color:white; border:none; padding:15px 30px; border-radius:50px; cursor:pointer; font-weight:bold;">Order Now 🛒</button>
     </header>
 
-    <div id="order-system-section">
+    <div id="order-system-section" style="display:none;">
         <nav id="category-nav"></nav>
-
-        <div class="discount-banner" style="background:#fff3cd; padding:20px; border-radius:12px; margin:20px 0; text-align:center;">
-            <p>🎓 <strong>Harvard Affiliate?</strong> Enter @harvard.edu for 10% off!</p>
-            <input type="email" id="user-email" placeholder="yourname@harvard.edu" style="padding:10px; width:220px; border-radius:5px; border:1px solid #ddd;">
-            <button onclick="window.applyDiscount()" style="background:#007bff; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer;">Apply</button>
-        </div>
-
-        <main id="menu-container">
-            </main>
-
-        <section id="group-order-summary" style="display:none;">
+        <main id="menu-container"></main>
+        <section id="group-order-summary" style="display:none; padding: 20px;">
             <h3>🛒 Order Summary</h3>
-            <pre id="summary-text"></pre>
-            <button class="copy-btn" onclick="window.copySummary()">Copy for Group Message</button>
+            <pre id="summary-text" style="background:#f8f9fa; padding:15px; border-radius:8px;"></pre>
+            <button onclick="window.copySummary()" style="width:100%; padding:15px; background:#28a745; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Copy to Clipboard</button>
         </section>
     </div>
 
