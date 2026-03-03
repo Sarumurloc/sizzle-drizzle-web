@@ -1,13 +1,13 @@
 import { db } from './firebase-config.js';
 import { 
     collection, query, where, getDocs, orderBy, doc, 
-    addDoc, updateDoc, runTransaction, serverTimestamp 
+    addDoc, runTransaction, serverTimestamp 
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 let cart = [];
-let currentSelectedSlot = null; // 追蹤當前分配的時段
+let currentSelectedSlot = null;
 
-// --- 1. 獲取可用時段 ---
+// --- 1. 獲取可用時段 (對齊後台 11:30~11:45 邏輯) ---
 async function getNextAvailableSlot() {
     try {
         const now = new Date();
@@ -28,7 +28,7 @@ async function getNextAvailableSlot() {
     } catch (e) { console.error("Slot Error:", e); return null; }
 }
 
-// --- 2. 核心提交功能 (真正寫入 Firebase) ---
+// --- 2. 核心提交功能 (修正：移除預設 0.9) ---
 window.submitOrder = async () => {
     if (cart.length === 0) return alert("Your cart is empty!");
     if (!currentSelectedSlot) return alert("No pickup slots available.");
@@ -38,47 +38,51 @@ window.submitOrder = async () => {
     btn.innerText = "Processing...";
 
     try {
-        // 使用事務 (Transaction) 確保數據一致性：防禦多人併發下單
         await runTransaction(db, async (transaction) => {
-            // A. 更新取餐時段計數
             const slotRef = doc(db, "pickup_slots", currentSelectedSlot.id);
             const slotSnap = await transaction.get(slotRef);
+            
             if (slotSnap.data().current_booked >= slotSnap.data().max_capacity) {
                 throw "This slot just filled up! Please refresh.";
             }
-            transaction.update(slotRef, { current_booked: slotSnap.data().current_booked + 1 });
 
-            // B. 寫入訂單資料
+            // 計算標準總價 (不包含身分折扣)
+            const standardTotal = cart.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
+
             const orderData = {
                 items: cart,
-                total_price: cart.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0) * 0.9,
+                standard_total: standardTotal,
+                harvard_total: standardTotal * 0.9, // 僅供後台參考
                 pickup_slot: currentSelectedSlot.id,
                 pickup_time: currentSelectedSlot.time_label,
                 created_at: serverTimestamp(),
-                status: "pending"
+                status: "pending",
+                verification_needed: true // 標記需要現場驗證證件
             };
+
             const ordersRef = collection(db, "orders");
+            transaction.update(slotRef, { current_booked: slotSnap.data().current_booked + 1 });
             await addDoc(ordersRef, orderData);
         });
 
-        alert("✅ Order Placed Successfully!");
+        alert("✅ Order Placed! Please pay at the counter.");
         cart = [];
         renderSummary();
-        window.location.reload(); // 重新整理以更新最新庫存與時段
+        window.location.reload();
     } catch (e) {
         alert("Order Failed: " + e);
         btn.disabled = false;
-        btn.innerText = "Place My Order";
+        btn.innerText = "Confirm & Place Order";
     }
 };
 
-// --- 3. 加入購物車 ---
+// --- 3. 加入購物車 (保持 item.unitPrice 是來自 menu.js 的 finalPrice) ---
 window.handleAddToCart = (itemId, itemName, price) => {
     const qtyInput = document.getElementById(`qty-${itemId}`);
     const quantity = parseInt(qtyInput.value);
     const maxStock = parseInt(qtyInput.getAttribute('max'));
 
-    if (quantity <= 0 || quantity > maxStock) return alert("Invalid quantity or out of stock.");
+    if (quantity <= 0 || quantity > maxStock) return alert("Invalid quantity.");
 
     const existing = cart.find(i => i.id === itemId);
     if (existing) existing.quantity += quantity;
@@ -87,7 +91,7 @@ window.handleAddToCart = (itemId, itemName, price) => {
     renderSummary();
 };
 
-// --- 4. 渲染摘要 (更新 UI 以包含提交按鈕) ---
+// --- 4. 渲染摘要 (修正 UI：清楚區分標準價與學生價) ---
 async function renderSummary() {
     const summarySection = document.getElementById('group-order-summary');
     const summaryText = document.getElementById('summary-text');
@@ -109,9 +113,16 @@ async function renderSummary() {
         itemsLines += `• ${item.name} x${item.quantity}: $${lineTotal.toFixed(2)}\n`;
     });
 
+    const harvardTotal = subtotal * 0.9;
+
     itemsLines += `====================\n`;
-    itemsLines += `PICKUP: ${slot ? slot.time_label : 'FULL'}\n`;
-    itemsLines += `TOTAL (10% OFF): $${(subtotal * 0.9).toFixed(2)}\n`;
+    itemsLines += `PICKUP: ${slot ? slot.time_label : 'FETCHING...'}\n`;
+    itemsLines += `--------------------\n`;
+    itemsLines += `STANDARD TOTAL: $${subtotal.toFixed(2)}\n`;
+    itemsLines += `🎓 HARVARD PRICE: $${harvardTotal.toFixed(2)}\n`;
+    itemsLines += `====================\n`;
+    itemsLines += `*Harvard price requires ID at pickup.\n`;
+    itemsLines += `Precision Billing Enabled 🔬`;
 
     summaryText.innerText = itemsLines;
 }
