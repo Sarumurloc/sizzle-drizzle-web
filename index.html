@@ -1,63 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sizzle & Drizzle | Order Now</title>
-    <style>
-        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding: 0; color: #333; background-color: #fafafa; scroll-behavior: smooth; }
-        
-        /* Navigation - Explicit Scope */
-        .main-nav { 
-            background: white; padding: 15px 30px; display: flex; justify-content: space-between; 
-            align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
-        }
-        .main-nav a { text-decoration: none; color: #555; font-weight: bold; margin-left: 20px; transition: 0.3s; }
-        .main-nav a:hover { color: #d9534f; }
-        .main-nav a.active { color: #d9534f; border-bottom: 2px solid #d9534f; }
+/* Nutrition Badge - Scientific UI Style */
+.nutrition-badge {
+    display: inline-block;
+    background-color: #f1f5f9; /* Slate 100 - 專業冷色調 */
+    color: #475569;           /* Slate 600 - 深灰藍 */
+    font-size: 10px;          /* 精細小字 */
+    padding: 3px 10px;
+    border-radius: 20px;      /* 膠囊形狀 */
+    border: 1px solid #e2e8f0;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+}
 
-        /* Hero & Category Styles - Consistent with previous version */
-        #hero-section { height: 60vh; background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=2000') center/cover; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; }
-        #category-nav { text-align: center; padding: 15px; background: white; position: sticky; top: 60px; z-index: 99; display: flex; justify-content: center; gap: 10px; border-bottom: 1px solid #eee; }
-        .nav-btn { padding: 8px 20px; border-radius: 20px; border: 1.5px solid #d9534f; background: white; color: #d9534f; cursor: pointer; font-weight: bold; }
-        .nav-btn.active { background: #d9534f; color: white; }
+.item-card {
+    background: white;
+    border: 1px solid #f0f0f0;
+    padding: 24px;
+    border-radius: 16px;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
 
-        /* Nutrition Badges - New UI Abstraction */
-        .nutrition-badge { display: inline-block; font-size: 0.75rem; padding: 2px 8px; border-radius: 4px; margin-right: 5px; font-weight: bold; }
-        .badge-cal { background: #fff3e0; color: #ef6c00; }
-        .badge-protein { background: #e3f2fd; color: #1565c0; }
-
-        .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding: 20px; }
-        .item-card { background: white; border: 1px solid #eee; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-    </style>
-</head>
-<body>
-
-    <nav class="main-nav">
-        <div style="font-size: 1.5em; font-weight: bold; color: #d9534f;">Sizzle & Drizzle</div>
-        <div>
-            <a href="index.html" class="active">Menu</a>
-            <a href="science.html">Our Science</a>
-        </div>
-    </nav>
-
-    <header id="hero-section">
-        <h1>Sizzle & Drizzle</h1>
-        <p>Scientific Taiwanese Cuisine designed by Harvard Medical staff.</p>
-        <button onclick="window.toggleOrderSystem()" style="background:#d9534f; color:white; border:none; padding:15px 30px; border-radius:50px; cursor:pointer; font-weight:bold;">Order Now 🛒</button>
-    </header>
-
-    <div id="order-system-section" style="display:none;">
-        <nav id="category-nav"></nav>
-        <main id="menu-container"></main>
-        <section id="group-order-summary" style="display:none; padding: 20px;">
-            <h3>🛒 Order Summary</h3>
-            <pre id="summary-text" style="background:#f8f9fa; padding:15px; border-radius:8px;"></pre>
-            <button onclick="window.copySummary()" style="width:100%; padding:15px; background:#28a745; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Copy to Clipboard</button>
-        </section>
-    </div>
-
-    <script type="module" src="js/menu.js"></script>
-    <script type="module" src="js/cart.js"></script>
-</body>
-</html>
+.item-card:hover {
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+}
