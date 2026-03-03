@@ -1,29 +1,74 @@
-/* Nutrition Badge - Scientific UI Style */
-.nutrition-badge {
-    display: inline-block;
-    background-color: #f1f5f9; /* Slate 100 - 專業冷色調 */
-    color: #475569;           /* Slate 600 - 深灰藍 */
-    font-size: 10px;          /* 精細小字 */
-    padding: 3px 10px;
-    border-radius: 20px;      /* 膠囊形狀 */
-    border: 1px solid #e2e8f0;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    white-space: nowrap;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sizzle & Drizzle | Medical-Grade Nutrition</title>
+    <style>
+        /* Base Reset */
+        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding: 0; color: #333; background-color: #f9f9f9; scroll-behavior: smooth; }
+        
+        /* Navigation Bar */
+        .main-nav { 
+            background: white; padding: 15px 30px; display: flex; justify-content: space-between; 
+            align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+        }
+        .main-nav .logo { font-size: 1.5em; font-weight: bold; color: #d9534f; }
+        .main-nav a { text-decoration: none; color: #555; font-weight: bold; margin-left: 20px; transition: 0.3s; }
+        .main-nav a:hover, .main-nav a.active { color: #d9534f; }
 
-.item-card {
-    background: white;
-    border: 1px solid #f0f0f0;
-    padding: 24px;
-    border-radius: 16px;
-    transition: all 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
+        /* Discount Banner */
+        .discount-banner { background: #fff3cd; padding: 20px; border-radius: 12px; margin: 20px; text-align: center; border: 1px solid #ffeeba; }
 
-.item-card:hover {
-    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-    transform: translateY(-2px);
-}
+        /* Menu Grid */
+        #menu-container { padding: 20px; max-width: 1200px; margin: 0 auto; }
+        .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
+        
+        /* Item Card & Scientific Badges */
+        .item-card { 
+            background: white; border: 1px solid #eee; padding: 25px; border-radius: 16px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; flex-direction: column; 
+        }
+        .nutrition-badge {
+            display: inline-block; background-color: #f1f5f9; color: #475569; 
+            font-size: 10px; padding: 3px 10px; border-radius: 20px; 
+            border: 1px solid #e2e8f0; font-weight: 600; margin-right: 5px; margin-bottom: 5px;
+        }
+        .price-tag { font-size: 1.3em; font-weight: bold; color: #d9534f; margin: 15px 0; }
+        
+        /* Buttons */
+        .add-btn { 
+            background: #007bff; color: white; border: none; padding: 12px; 
+            border-radius: 8px; font-weight: bold; cursor: pointer; flex: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="main-nav">
+        <div class="logo">Sizzle & Drizzle</div>
+        <div>
+            <a href="index.html" class="active">Menu</a>
+            <a href="science.html">Our Science</a>
+        </div>
+    </nav>
+
+    <div class="discount-banner">
+        🎓 <strong>Harvard Affiliate?</strong> Enter @harvard.edu for 10% off!
+        <input type="email" id="user-email" placeholder="email" style="padding:8px; margin:0 10px; border-radius:5px; border:1px solid #ddd;">
+        <button onclick="window.applyDiscount()" style="padding:8px 15px; background:#007bff; color:white; border:none; border-radius:5px; cursor:pointer;">Apply</button>
+    </div>
+
+    <main id="menu-container">
+        </main>
+
+    <section id="group-order-summary" style="display:none; padding:40px; background:white; margin:20px; border-radius:15px; border:2px dashed #007bff;">
+        <h3>📋 Group Order Summary</h3>
+        <pre id="summary-text" style="background:#f8f9fa; padding:20px; border-radius:8px; white-space:pre-wrap;"></pre>
+        <button onclick="window.copySummary()" style="width:100%; padding:15px; background:#28a745; color:white; border:none; border-radius:10px; font-size:1.1em; font-weight:bold; cursor:pointer;">Copy to Clipboard</button>
+    </section>
+
+    <script type="module" src="js/menu.js"></script>
+    <script type="module" src="js/cart.js"></script>
+</body>
+</html>
