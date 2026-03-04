@@ -1,8 +1,8 @@
-/* --- 1. 基礎變數與背景 (使用 assets 路徑) --- */
+/* --- 1. 基礎變數與背景 (在地化連結) --- */
 :root {
     --harvard-red: #A51C30;
     --dark-slate: #333E48;
-    --light-bg: rgba(248, 249, 250, 0.85); /* 稍微調低透明度，增加可讀性 */
+    --light-bg-alpha: rgba(248, 249, 250, 0.85); /* 半透明背景，確保文字可讀 */
 }
 
 body {
@@ -13,14 +13,14 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    /* 引用 assets 資料夾內的圖檔 */
+    /* 引用 assets 資料夾內的新路徑 */
     background-image: url('assets/bg-harvard.jpg'); 
-    background-attachment: fixed;
+    background-attachment: fixed; /* 底圖固定，營造精緻質感 */
     background-size: cover;
     background-position: center;
 }
 
-/* --- 2. 導航欄 (半透明磨砂效果) --- */
+/* --- 2. 導航欄 (磨砂玻璃質感) --- */
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -28,62 +28,72 @@ body {
     padding: 15px 5%;
     background: rgba(255, 255, 255, 0.9);
     border-bottom: 2px solid var(--harvard-red);
-    backdrop-filter: blur(8px); /* 磨砂玻璃質感 */
+    backdrop-filter: blur(8px);
+    z-index: 1000;
 }
 
-/* --- 3. 佈局核心 (極致靠左) --- */
+.nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--harvard-red);
+}
+
+/* --- 3. 佈局核心 (解決空間判定問題：極致靠左) --- */
 .container {
     flex: 1;
     display: block;
-    margin: 40px 0 40px 5%;
+    margin: 40px 0 40px 5%; /* 左邊界對齊導航欄，右邊界完全開放 */
     max-width: none;
     padding: 0;
     position: relative;
 }
 
 .menu-section {
-    width: calc(100% - 460px); 
+    /* 預留 450px 給右側浮動訂單卡片，剩餘空間全給菜單 */
+    width: calc(100% - 450px); 
     text-align: left;
-    background: rgba(255, 255, 255, 0.75); 
+    background: rgba(255, 255, 255, 0.7); /* 輕微透出底圖 */
     padding: 30px;
     border-radius: 20px;
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(5px);
 }
 
-/* --- 4. 菜單網格與縮小化標籤 (核心優化) --- */
+/* --- 4. 菜單網格與營養標籤 (細節精緻化) --- */
 .items-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
-    margin-top: 25px;
+    /* 強制演算法：門檻降至 260px，確保大螢幕必現兩列 */
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
 }
 
 .item-card {
     background: white;
-    padding: 18px;
+    padding: 22px;
     border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    transition: all 0.2s ease-in-out;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease-in-out;
 }
 
-.item-card:hover { transform: translateY(-3px); }
+.item-card:hover { transform: translateY(-5px); }
 
-/* 營養元件標籤縮小 (Precision Micro Tags) */
+/* 核心優化：微縮營養標籤 (Micro Precision Tags) */
 .nutrient-tag {
     display: inline-block;
     background: #edf2f7;
     color: #4a5568;
-    font-size: 0.6rem; /* 從原本的尺寸進一步縮小 */
-    padding: 1px 5px;
-    margin: 0 2px 4px 0;
+    font-size: 0.6rem;    /* 極小化字體 */
+    padding: 1px 5px;    /* 縮減內距 */
+    margin: 0 2px 4px 0; /* 縮減間距防止換行擠壓 */
     border-radius: 3px;
     font-weight: 700;
-    text-transform: uppercase;
+    text-transform: uppercase; /* 大寫增加專業感 */
     letter-spacing: 0.5px;
     border: 0.5px solid #cbd5e0;
 }
 
-/* --- 5. 右側浮動訂單 --- */
+/* --- 5. 側邊浮動訂單 (Fixed Strategy) --- */
 .cart-section {
     position: fixed;
     top: 160px;
@@ -99,11 +109,35 @@ body {
     box-shadow: 0 15px 35px rgba(0,0,0,0.15);
 }
 
-/* --- 6. 頁底 (地址更新) --- */
+.place-order-btn {
+    width: 100%;
+    padding: 15px;
+    background: var(--harvard-red);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+/* --- 6. 頁底 (邊界防禦) --- */
 .site-footer {
     background-color: var(--dark-slate);
     color: white;
-    padding: 40px 5%;
+    padding: 50px 5%;
     margin-top: 60px;
     border-top: 5px solid var(--harvard-red);
+}
+
+/* --- 7. 手機與平板防禦 (Boundary Check) --- */
+@media (max-width: 1100px) {
+    .container { margin: 20px auto; padding: 0 20px; }
+    .menu-section { width: 100%; }
+    .cart-section {
+        position: static; 
+        width: 100%;
+        margin-top: 30px;
+    }
+    .items-grid { grid-template-columns: 1fr; }
 }
