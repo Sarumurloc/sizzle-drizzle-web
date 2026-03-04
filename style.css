@@ -1,3 +1,8 @@
+/* 定義全域變數 (補齊缺失的哈佛紅) */
+:root {
+    --harvard-red: #A51C30;
+}
+
 /* --- 5. 購物車終極防禦演算法 (強化版) --- */
 .cart-section {
     position: fixed;
@@ -20,9 +25,9 @@
     overflow: hidden; /* 防止內部元件溢出邊界 */
 }
 
-/* 關鍵修正：這是包住所有內容的容器，必須也是 Flex */
+/* 移除 !important，讓 JS 的 style.display = 'none' / 'flex' 能夠正常作用 */
 #order-form-content {
-    display: flex !important; /* 強制覆蓋 JS 可能導致的 display: block */
+    /* display 由 JS 控制 */
     flex-direction: column;
     height: 100%;
     flex: 1;
@@ -72,7 +77,7 @@
 .place-order-btn {
     width: 100%;
     padding: 15px;
-    background: var(--harvard-red); /* 確保你的 :root 已定義此顏色 */
+    background: var(--harvard-red); 
     color: white;
     border: none;
     border-radius: 8px;
@@ -80,4 +85,14 @@
     cursor: pointer;
     flex-shrink: 0; /* 禁止被壓縮 */
     margin-top: auto; /* 保險機制：將按鈕推向容器底部 */
+    transition: background-color 0.2s ease;
+}
+
+.place-order-btn:hover {
+    background: #8a1527; /* 增加 Hover 效果 */
+}
+
+.place-order-btn:disabled {
+    background: #cbd5e0;
+    cursor: not-allowed;
 }
