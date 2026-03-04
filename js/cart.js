@@ -3,28 +3,18 @@ import {
     collection, addDoc, serverTimestamp 
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// 內部狀態儲存
 let cart = [];
 
-/**
- * 演算法優化：計算取餐時間
- * 核心邏輯：獲取當前哈佛當地時間，並往後推延 1 小時
- */
 function getEstimatedPickupTime() {
-    // 抽象化：獲取當前美國東部時間 (EST)
     const now = new Date();
     const estTime = new Date(now.toLocaleString("en-US", {timeZone: "America/New_York"}));
-    
-    // 演算法：增加 1 小時
     estTime.setHours(estTime.getHours() + 1);
-
-    // 格式化顯示 (例如: 10:54 AM)
     const options = { hour: '2-digit', minute: '2-digit', hour12: true };
     return estTime.toLocaleTimeString('en-US', options);
 }
 
 /**
- * 渲染邏輯：更新訂單摘要
+ * 渲染邏輯：修正 ID 抓取路徑 (guest-id)
  */
 async function renderSummary() {
     const emptyMsg = document.getElementById('empty-cart-msg');
@@ -38,14 +28,17 @@ async function renderSummary() {
         return;
     }
 
+    // 魯棒性修正：確保切換為 flex 以配合 CSS 佈局
     if (emptyMsg) emptyMsg.style.display = 'none';
-    if (formContent) formContent.style.display = 'block';
+    if (formContent) formContent.style.display = 'flex'; 
 
     const pickupTime = getEstimatedPickupTime();
     let subtotal = 0;
-    const customerName = document.getElementById('cust-id')?.value || 'Guest';
     
-    let itemsLines = `🛒 Order Detail for ${customerName}\n`;
+    // 關鍵修正：對應 HTML 中的 guest-id
+    const customerID = document.getElementById('guest-id')?.value || 'Guest';
+    
+    let itemsLines = `🛒 Order Detail for ${customerID}\n`;
     itemsLines += `============================\n`;
 
     cart.forEach(item => {
@@ -56,9 +49,8 @@ async function renderSummary() {
     });
 
     itemsLines += `============================\n`;
-    // 實施新邏輯：顯示 1 小時後的取餐時間
     itemsLines += `ESTIMATED PICKUP: After ${pickupTime}\n`;
-    itemsLines += `(Final confirmation with staff at pickup)\n`;
+    itemsLines += `(Final confirmation at pickup)\n`;
     itemsLines += `============================\n`;
     itemsLines += `Standard Total: $${subtotal.toFixed(2)}\n`;
     itemsLines += `🎓 Harvard Price: $${(subtotal * 0.9).toFixed(2)}\n`;
@@ -68,19 +60,11 @@ async function renderSummary() {
     summaryText.innerText = itemsLines;
 }
 
-/**
- * 加入購物車 (配合你的 Firebase ID 修改計畫)
- * 這裡採用最穩定的四參數傳入
- */
 window.handleAddToCart = (itemId, itemName, price, safeId) => {
-    // 如果你修改了 Firebase ID 且不含特殊字元，safeId 就會等於 itemId
     const targetId = safeId || itemId;
     const qtyInput = document.getElementById(`qty-${targetId}`);
     
-    if (!qtyInput) {
-        console.error("Boundary Check: Input not found", targetId);
-        return;
-    }
+    if (!qtyInput) return;
     
     const quantity = parseInt(qtyInput.value) || 0;
     if (quantity <= 0) return;
@@ -95,14 +79,19 @@ window.handleAddToCart = (itemId, itemName, price, safeId) => {
 };
 
 /**
- * 下單邏輯
+ * 下單邏輯：修正欄位抓取與按鈕狀態管理
  */
 window.submitOrder = async () => {
-    const custId = document.getElementById('cust-id')?.value.trim();
-    const custPhone = document.getElementById('cust-phone')?.value.trim();
-    if (!custId || !custPhone) return alert("Please enter Name and Phone.");
+    // 關鍵修正：對應 HTML 中的 guest-id 與 guest-phone
+    const guestId = document.getElementById('guest-id')?.value.trim();
+    const guestPhone = document.getElementById('guest-phone')?.value.trim();
+    
+    if (!guestId || !guestPhone) {
+        alert("Please enter both ID and Phone number.");
+        return;
+    }
 
-    const btn = document.getElementById('submit-btn');
+    const btn = document.querySelector('.place-order-btn'); // 修正選擇器路徑
     btn.disabled = true;
     btn.innerText = "PROCESSING...";
 
@@ -111,7 +100,7 @@ window.submitOrder = async () => {
         const pickupTime = getEstimatedPickupTime();
 
         await addDoc(collection(db, "orders"), {
-            customer: { name: custId, phone: custPhone },
+            customer: { id: guestId, phone: guestPhone },
             items: cart,
             billing: { standard_total: subtotal, harvard_total: subtotal * 0.9 },
             pickup_info: { 
@@ -131,9 +120,11 @@ window.submitOrder = async () => {
     }
 };
 
-// 監聽 ID 輸入同步更新摘要
+/**
+ * 監聽輸入：當用戶打字時，即時更新訂單摘要中的名字
+ */
 document.addEventListener('input', (e) => {
-    if (e.target.id === 'cust-id') renderSummary();
+    if (e.target.id === 'guest-id') renderSummary();
 });
 
 renderSummary();
