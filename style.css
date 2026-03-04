@@ -1,26 +1,21 @@
-/* --- 1. 基礎變數與背景 (在地化連結) --- */
+/* --- 1. 基礎變數與背景 --- */
 :root {
     --harvard-red: #A51C30;
     --dark-slate: #333E48;
-    --light-bg-alpha: rgba(248, 249, 250, 0.85); 
 }
 
 body {
     margin: 0;
     font-family: 'Inter', -apple-system, sans-serif;
     color: var(--dark-slate);
-    line-height: 1.6;
-    display: flex;
-    flex-direction: column;
     min-height: 100vh;
-    /* 引用 assets 資料夾內的底圖 */
     background-image: url('assets/bg-harvard.jpg'); 
     background-attachment: fixed;
     background-size: cover;
     background-position: center;
 }
 
-/* --- 2. 導航欄 (磨砂玻璃效果) --- */
+/* --- 2. 導航欄 --- */
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -34,71 +29,46 @@ body {
     z-index: 1100;
 }
 
-.nav-logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: var(--harvard-red);
-}
-
-/* --- 3. 佈局核心 (解決空間判定：極致靠左) --- */
+/* --- 3. 佈局核心 (極致靠左) --- */
 .container {
-    flex: 1;
     display: block;
     margin: 40px 0 40px 5%;
     max-width: none;
-    padding: 0;
     position: relative;
 }
 
 .menu-section {
-    /* 預留 450px 給右側浮動訂單，剩餘全給菜單 */
     width: calc(100% - 480px); 
-    text-align: left;
     background: rgba(255, 255, 255, 0.75); 
     padding: 30px;
     border-radius: 20px;
     backdrop-filter: blur(5px);
 }
 
-/* --- 4. 菜單網格與微縮標籤 (核心優化) --- */
+/* --- 4. 菜單網格與微縮標籤 --- */
 .items-grid {
     display: grid;
-    /* 強制雙列演算法門檻 */
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 25px;
-    margin-top: 30px;
 }
 
-.item-card {
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    transition: transform 0.2s ease;
-}
-
-.item-card:hover { transform: translateY(-5px); }
-
-/* 營養元件微縮標籤 (Precision Tags) */
 .nutrient-tag {
     display: inline-block;
     background: #edf2f7;
-    color: #4a5568;
-    font-size: 0.6rem;    /* 極小化 */
+    font-size: 0.6rem;
     padding: 1px 5px;
     margin: 0 2px 4px 0;
     border-radius: 3px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
     border: 0.5px solid #cbd5e0;
 }
 
-/* --- 5. 右側浮動訂單 (防溢出捲軸設計) --- */
+/* --- 5. 右側浮動訂單 (關鍵修復：視窗邊界防禦) --- */
 .cart-section {
     position: fixed;
-    top: 140px;      /* 避開 Navbar */
+    top: 120px;      /* 距離頂部間距 */
+    bottom: 40px;    /* 關鍵：距離底部留白，防止卡片穿出螢幕 */
     right: 40px;
     width: 360px;
     z-index: 1000;
@@ -106,16 +76,19 @@ body {
 
 .cart-card {
     background: rgba(255, 255, 255, 0.98);
-    padding: 25px;
+    padding: 20px;
     border-radius: 15px;
     box-shadow: 0 15px 40px rgba(0,0,0,0.2);
     border: 1px solid rgba(165, 28, 48, 0.1);
     
-    /* 魯棒性：高度限制與彈性佈局 */
-    max-height: 80vh; 
+    /* 這裡使用彈性佈局，讓內部元件上下排列 */
     display: flex;
     flex-direction: column;
+    height: 100%;    /* 填滿 cart-section 定義的上下範圍 */
+    box-sizing: border-box;
 }
+
+.cart-card h2 { margin-top: 0; }
 
 #summary-text {
     background: #f8f9fa;
@@ -126,14 +99,14 @@ body {
     white-space: pre-wrap;
     border: 1px dashed #cbd5e0;
     
-    /* 核心修改：內部捲軸區 */
-    max-height: 300px;    
-    overflow-y: auto;     
-    margin-bottom: 10px;
+    /* 核心修改：讓清單佔據所有剩餘空間，並在內部捲動 */
+    flex: 1;             /* 自動伸展佔滿卡片中央 */
+    overflow-y: auto;    /* 只有這裡會捲動 */
+    margin: 10px 0;      /* 給上下留點呼吸空間 */
     color: #2d3748;
 }
 
-/* 自定義紅色捲軸 */
+/* 自定義精緻捲軸 */
 #summary-text::-webkit-scrollbar { width: 5px; }
 #summary-text::-webkit-scrollbar-thumb {
     background: var(--harvard-red);
@@ -149,28 +122,22 @@ body {
     border-radius: 8px;
     font-weight: bold;
     cursor: pointer;
-    transition: opacity 0.2s;
+    flex-shrink: 0;      /* 確保按鈕不會因為空間不足而被壓縮 */
 }
 
-.place-order-btn:hover { opacity: 0.9; }
-
-/* --- 6. 頁底 --- */
+/* --- 6. 頁底與手機防禦 --- */
 .site-footer {
     background-color: var(--dark-slate);
     color: white;
     padding: 40px 5%;
-    margin-top: 60px;
     border-top: 5px solid var(--harvard-red);
 }
 
-/* --- 7. 手機版防禦 (Boundary Check) --- */
 @media (max-width: 1150px) {
-    .container { margin: 20px auto; padding: 0 20px; }
-    .menu-section { width: 100%; background: white; }
+    .menu-section { width: 100%; }
     .cart-section {
         position: static; 
         width: 100%;
-        margin-top: 30px;
+        height: auto;    /* 手機版取消高度限制 */
     }
-    .items-grid { grid-template-columns: 1fr; }
 }
