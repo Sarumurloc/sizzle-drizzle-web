@@ -1,75 +1,4 @@
-/* --- 1. 基礎與背景 --- */
-:root {
-    --harvard-red: #A51C30;
-    --dark-slate: #333E48;
-}
-
-body {
-    margin: 0;
-    font-family: 'Inter', -apple-system, sans-serif;
-    color: var(--dark-slate);
-    min-height: 100vh;
-    background-image: url('assets/bg-harvard.jpg'); 
-    background-attachment: fixed;
-    background-size: cover;
-    background-position: center;
-}
-
-/* --- 2. 導航與佈局 --- */
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 5%;
-    background: rgba(255, 255, 255, 0.95);
-    border-bottom: 2px solid var(--harvard-red);
-    backdrop-filter: blur(8px);
-    position: sticky;
-    top: 0;
-    z-index: 1100;
-}
-
-.container {
-    display: flex;
-    margin: 40px 0 40px 5%;
-}
-
-.menu-section {
-    width: calc(100% - 480px); 
-    background: rgba(255, 255, 255, 0.8); 
-    padding: 30px;
-    border-radius: 20px;
-    backdrop-filter: blur(5px);
-}
-
-.menu-section h2 {
-    color: var(--harvard-red);
-    border-bottom: 2px solid var(--harvard-red);
-    display: inline-block;
-    padding-bottom: 5px;
-    margin-top: 30px;
-}
-
-/* --- 3. 菜單網格與微縮標籤 --- */
-.items-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 25px;
-}
-
-.nutrient-tag {
-    display: inline-block;
-    background: #edf2f7;
-    font-size: 0.6rem;
-    padding: 1px 5px;
-    margin: 0 2px 4px 0;
-    border-radius: 3px;
-    font-weight: 700;
-    text-transform: uppercase;
-    border: 0.5px solid #cbd5e0;
-}
-
-/* --- 4. 購物車終極修復 (找回欄位、防橫移) --- */
+/* --- 5. 購物車終極防禦演算法 --- */
 .cart-section {
     position: fixed;
     top: 120px;      
@@ -86,15 +15,15 @@ body {
     box-shadow: 0 15px 40px rgba(0,0,0,0.2);
     display: flex;
     flex-direction: column;
-    height: 100%;    
+    height: 100%; /* 撐滿 cart-section */
     box-sizing: border-box;
 }
 
-/* 強制固定輸入欄位區域 */
+/* 輸入欄位：魯棒性防禦，不縮小 */
 .cart-header-fields {
-    margin-bottom: 15px;
-    flex-shrink: 0; /* 魯棒性：絕對不允許被壓縮消失 */
-    display: block !important;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    flex-shrink: 0; 
 }
 
 .cart-header-fields input {
@@ -104,7 +33,16 @@ body {
     border: 1px solid #cbd5e0;
     border-radius: 6px;
     font-size: 0.9rem;
-    box-sizing: border-box; /* 確保不溢出 */
+    box-sizing: border-box;
+}
+
+/* 清單容器：彈性擴展並處理捲軸 */
+#summary-container {
+    flex: 1; /* 佔據剩餘空間 */
+    min-height: 0; /* 關鍵：防止 Flex 子元素溢出 */
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
 }
 
 #summary-text {
@@ -113,26 +51,15 @@ body {
     border-radius: 8px;
     font-family: 'Courier New', monospace;
     font-size: 0.82rem;
-    color: #2d3748;
-    
-    /* 核心捲軸控制 */
-    flex: 1;             
-    overflow-y: auto;    /* 垂直捲動 */
-    overflow-x: hidden;  /* 禁用橫移 */
+    flex: 1;
+    overflow-y: auto;    /* 只有這裡會出現垂直捲軸 */
+    overflow-x: hidden;  /* 嚴禁橫向位移 */
     white-space: pre-wrap; 
-    word-break: break-all;
-    
     border: 1px dashed #cbd5e0;
-    margin-bottom: 15px;
+    margin: 0;
 }
 
-/* 自定義垂直捲軸 */
-#summary-text::-webkit-scrollbar { width: 5px; }
-#summary-text::-webkit-scrollbar-thumb {
-    background: var(--harvard-red);
-    border-radius: 10px;
-}
-
+/* 結帳按鈕：固定底部 */
 .place-order-btn {
     width: 100%;
     padding: 15px;
@@ -143,11 +70,4 @@ body {
     font-weight: bold;
     cursor: pointer;
     flex-shrink: 0;
-}
-
-/* --- 5. 響應式邊界處理 --- */
-@media (max-width: 1150px) {
-    .container { flex-direction: column; }
-    .menu-section { width: 100%; }
-    .cart-section { position: static; width: 100%; height: auto; margin-top: 20px; }
 }
