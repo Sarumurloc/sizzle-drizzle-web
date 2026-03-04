@@ -5,16 +5,19 @@ import {
 
 let cart = [];
 
+/**
+ * 抽象化：獲取哈佛當地時間 (EST)
+ */
 function getEstimatedPickupTime() {
     const now = new Date();
     const estTime = new Date(now.toLocaleString("en-US", {timeZone: "America/New_York"}));
-    estTime.setHours(estTime.getHours() + 1);
+    estTime.setHours(estTime.getHours() + 1); // 演算法：延後一小時
     const options = { hour: '2-digit', minute: '2-digit', hour12: true };
     return estTime.toLocaleTimeString('en-US', options);
 }
 
 /**
- * 渲染邏輯：依據購物車狀態切換 UI
+ * 渲染邏輯：嚴謹的 UI 狀態切換
  */
 async function renderSummary() {
     const emptyMsg = document.getElementById('empty-cart-msg');
@@ -24,18 +27,18 @@ async function renderSummary() {
 
     if (cart.length === 0) {
         if (emptyMsg) emptyMsg.style.display = 'block';
-        if (formContent) formContent.style.display = 'none'; // 隱藏表單
+        if (formContent) formContent.style.display = 'none';
         return;
     }
 
-    // 購物車有商品時，顯示表單並設為 flex 排版
+    // 魯棒性確保：切換為 flex 以啟用 CSS 佈局
     if (emptyMsg) emptyMsg.style.display = 'none';
     if (formContent) formContent.style.display = 'flex'; 
 
     const pickupTime = getEstimatedPickupTime();
     let subtotal = 0;
     
-    // 即時獲取輸入的名字，若空則顯示 Guest
+    // 即時獲取輸入 (對應 HTML ID: guest-id)
     const customerID = document.getElementById('guest-id')?.value.trim() || 'Guest';
     
     let itemsLines = `🛒 Order Detail for ${customerID}\n`;
@@ -50,21 +53,18 @@ async function renderSummary() {
 
     itemsLines += `============================\n`;
     itemsLines += `ESTIMATED PICKUP: After ${pickupTime}\n`;
-    itemsLines += `(Final confirmation at pickup)\n`;
     itemsLines += `============================\n`;
     itemsLines += `Standard Total: $${subtotal.toFixed(2)}\n`;
     itemsLines += `🎓 Harvard Price: $${(subtotal * 0.9).toFixed(2)}\n`;
     itemsLines += `============================\n`;
     itemsLines += `Medical Integrity. Chef's Precision. 🔬`;
 
-    // 使用 textContent 替代 innerText，效能更好且更安全
     summaryText.textContent = itemsLines;
 }
 
 window.handleAddToCart = (itemId, itemName, price, safeId) => {
     const targetId = safeId || itemId;
     const qtyInput = document.getElementById(`qty-${targetId}`);
-    
     if (!qtyInput) return;
     
     const quantity = parseInt(qtyInput.value) || 0;
@@ -80,20 +80,20 @@ window.handleAddToCart = (itemId, itemName, price, safeId) => {
 };
 
 /**
- * 下單邏輯
+ * 下單邏輯：周全的防禦 (Boundary Check)
  */
 window.submitOrder = async () => {
     const guestId = document.getElementById('guest-id')?.value.trim();
     const guestPhone = document.getElementById('guest-phone')?.value.trim();
     
     if (!guestId || !guestPhone) {
-        alert("Please enter both ID and Phone number.");
+        alert("Please enter Name and Phone.");
         return;
     }
 
     const btn = document.querySelector('.place-order-btn'); 
     btn.disabled = true;
-    btn.textContent = "PROCESSING..."; // 改用 textContent
+    btn.textContent = "PROCESSING...";
 
     try {
         const subtotal = cart.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
@@ -103,17 +103,14 @@ window.submitOrder = async () => {
             customer: { id: guestId, phone: guestPhone },
             items: cart,
             billing: { standard_total: subtotal, harvard_total: subtotal * 0.9 },
-            pickup_info: { 
-                estimated_after: pickupTime,
-                note: "Confirm with staff at pickup" 
-            },
+            pickup_info: { estimated_after: pickupTime },
             status: "pending",
             created_at: serverTimestamp()
         });
 
-        alert("Order Received! Pickup estimated after " + pickupTime);
+        alert("Order Received! Pickup after " + pickupTime);
         
-        // 成功後清空購物車與欄位 (取代重新整理頁面，體驗更佳)
+        // 成功後的狀態清理
         cart = [];
         document.getElementById('guest-id').value = '';
         document.getElementById('guest-phone').value = '';
@@ -130,12 +127,9 @@ window.submitOrder = async () => {
     }
 };
 
-/**
- * 監聽輸入：當用戶打字時，即時更新訂單摘要中的名字
- */
+// 監聽 ID 輸入同步更新摘要
 document.addEventListener('input', (e) => {
     if (e.target.id === 'guest-id') renderSummary();
 });
 
-// 初始化畫面
 renderSummary();
