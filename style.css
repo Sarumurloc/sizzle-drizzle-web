@@ -1,9 +1,7 @@
-/* 定義全域變數 (補齊缺失的哈佛紅) */
 :root {
     --harvard-red: #A51C30;
 }
 
-/* --- 5. 購物車終極防禦演算法 (強化版) --- */
 .cart-section {
     position: fixed;
     top: 120px;      
@@ -22,19 +20,18 @@
     flex-direction: column;
     height: 100%; 
     box-sizing: border-box;
-    overflow: hidden; /* 防止內部元件溢出邊界 */
+    overflow: hidden; 
 }
 
-/* 移除 !important，讓 JS 的 style.display = 'none' / 'flex' 能夠正常作用 */
+/* JS 控制點：初始隱藏，渲染時由 JS 設為 flex */
 #order-form-content {
-    /* display 由 JS 控制 */
+    display: none; 
     flex-direction: column;
     height: 100%;
     flex: 1;
     min-height: 0;
 }
 
-/* 輸入欄位：魯棒性防禦，不縮小 */
 .cart-header-fields {
     margin-bottom: 10px;
     flex-shrink: 0; 
@@ -50,7 +47,6 @@
     box-sizing: border-box;
 }
 
-/* 清單容器：這區域將會吞噬剩餘空間 */
 #summary-container {
     flex: 1; 
     min-height: 0; 
@@ -66,14 +62,13 @@
     font-family: 'Courier New', monospace;
     font-size: 0.82rem;
     flex: 1;
-    overflow-y: auto;    /* 只有這裡會出現垂直捲軸 */
+    overflow-y: auto; /* 核心防禦：僅此區域可滾動 */
     overflow-x: hidden;  
     white-space: pre-wrap; 
     border: 1px dashed #cbd5e0;
     margin: 0;
 }
 
-/* 結帳按鈕：固定在最底部 */
 .place-order-btn {
     width: 100%;
     padding: 15px;
@@ -83,14 +78,12 @@
     border-radius: 8px;
     font-weight: bold;
     cursor: pointer;
-    flex-shrink: 0; /* 禁止被壓縮 */
-    margin-top: auto; /* 保險機制：將按鈕推向容器底部 */
+    flex-shrink: 0; 
+    margin-top: auto; 
     transition: background-color 0.2s ease;
 }
 
-.place-order-btn:hover {
-    background: #8a1527; /* 增加 Hover 效果 */
-}
+.place-order-btn:hover { background: #8a1527; }
 
 .place-order-btn:disabled {
     background: #cbd5e0;
