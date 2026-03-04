@@ -1,4 +1,4 @@
-/* --- 1. 基礎重置與變數 --- */
+/* --- 1. 基礎變數與重置 --- */
 :root {
     --harvard-red: #A51C30;
     --dark-slate: #333E48;
@@ -7,7 +7,7 @@
 
 body {
     margin: 0;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter', -apple-system, sans-serif;
     background-color: var(--light-bg);
     color: var(--dark-slate);
     display: flex;
@@ -16,6 +16,15 @@ body {
 }
 
 /* --- 2. 導航與 Banner --- */
+.announcement-banner {
+    background-color: #FFF3CD;
+    color: #856404;
+    text-align: center;
+    padding: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -25,45 +34,54 @@ body {
     border-bottom: 2px solid var(--harvard-red);
 }
 
-/* --- 3. 佈局核心 (解放左側空間) --- */
-.container {
-    flex: 1;
-    max-width: 1400px; /* 拉寬總容器 */
-    margin: 40px auto;
-    padding: 0 5%;    /* 讓內容往左右兩邊推開 */
-    position: relative;
-    display: block;    /* 取消 Grid，讓菜單容器能拿到全部寬度 */
+.nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--harvard-red);
 }
 
+/* --- 3. 佈局核心 (重點：取消置中，改為靠左) --- */
+.container {
+    flex: 1;
+    display: block;
+    margin: 40px 0 40px 5%; /* 關鍵：左側留 5% 間距，右側不設限制 */
+    max-width: none;        /* 取消最大寬度限制 */
+    padding: 0;
+}
+
+/* 菜單區域：保留右側 400px 給浮動訂單卡片 */
 .menu-section {
-    /* 這裡留出 400px 空間給右側浮動的訂單，標題和菜單就會靠最左 */
-    width: calc(100% - 400px); 
+    width: calc(100% - 450px); 
     text-align: left;
 }
 
-/* --- 4. 菜單網格 (自動雙列) --- */
+/* --- 4. 菜單網格 (強制雙列演算法) --- */
 .items-grid {
     display: grid;
-    /* 核心：調低門檻至 250px，配合解放後的寬度，電腦版必現兩列 */
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 25px;
+    /* 魯棒性：只要左側空間大於 500px，就一定能排成兩列 */
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
     margin-top: 30px;
 }
 
 .item-card {
     background: white;
-    padding: 20px;
+    padding: 25px;
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
 }
 
-/* --- 5. 浮動訂單 (Fixed Position) --- */
+.item-card:hover { transform: translateY(-5px); }
+
+/* --- 5. 浮動訂單 (右側固定，不佔用左側空間) --- */
 .cart-section {
-    position: fixed; /* 讓它脫離排版流，浮在螢幕右側 */
-    top: 180px;      /* 避開 Navbar */
-    right: 5%;       /* 貼齊畫面右邊邊緣 */
-    width: 350px;    /* 固定寬度 */
-    z-index: 999;
+    position: fixed;
+    top: 180px;
+    right: 40px; /* 固定在視窗右方 40px */
+    width: 350px;
+    z-index: 100;
 }
 
 .cart-card {
@@ -77,28 +95,19 @@ body {
 .site-footer {
     background-color: var(--dark-slate);
     color: white;
-    padding: 50px 20px 30px;
+    padding: 50px 5% 30px; /* 與上方 container 對齊 */
     margin-top: 60px;
     border-top: 5px solid var(--harvard-red);
 }
 
-.footer-content {
-    max-width: 1400px;
-    margin: 0 auto;
-    text-align: center;
-}
-
-/* --- 7. 手機版兼顧 (魯棒性防禦) --- */
+/* --- 7. 手機版防禦 (Boundary Check) --- */
 @media (max-width: 1100px) {
+    .container { margin: 20px auto; padding: 0 20px; }
     .menu-section { width: 100%; }
-    
     .cart-section {
-        position: static; /* 回到標準排版，跟在菜單下面 */
+        position: static; 
         width: 100%;
         margin-top: 30px;
     }
-
-    .items-grid {
-        grid-template-columns: 1fr; /* 手機版維持單列最清晰 */
-    }
+    .items-grid { grid-template-columns: 1fr; }
 }
