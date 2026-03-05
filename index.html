@@ -3,29 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="SIZZLE & DRIZZLE in Cambridge. Data-driven, healthy Chinese cuisine near Harvard. Order fresh produce and chef's specials online.">
+    
+    <meta name="description" content="SIZZLE & DRIZZLE in Cambridge. Data-driven, healthy Chinese cuisine near Harvard.">
+    <meta property="og:title" content="SIZZLE & DRIZZLE | Healthy Chinese Cuisine">
+    <meta property="og:description" content="Harvard's choice for data-driven, healthy Chinese food. Order online now.">
+    <meta property="og:type" content="website">
+    
     <title>SIZZLE & DRIZZLE | Order Online</title>
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Restaurant",
+      "name": "SIZZLE & DRIZZLE",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "1220 Massachusetts Ave",
+        "addressLocality": "Cambridge",
+        "addressRegion": "MA",
+        "addressCountry": "US"
+      },
+      "servesCuisine": "Healthy Chinese",
+      "priceRange": "$$"
+    }
+    </script>
+
     <style>
-        /* 基礎設定放寬，為了容納三欄佈局 */
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; background-color: #f4f7f6; color: #333; }
-        h1 { color: #2c3e50; text-align: center; margin-bottom: 5px; letter-spacing: 1px; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; background-color: #f4f7f6; color: #333; padding-bottom: 80px; /* 預留底部空間給手機浮動按鈕 */ }
+        h1 { color: #2c3e50; text-align: center; margin-bottom: 5px; letter-spacing: 1px; font-weight: 800; }
         p.address { text-align: center; color: #7f8c8d; border-bottom: 2px solid #e0e0e0; padding-bottom: 15px; margin-top: 0; font-size: 0.9em; }
         
-        /* 響應式排版框架 (抽象化空間) */
         .app-layout { display: flex; flex-direction: column; gap: 25px; margin-top: 20px; }
         .menu-area { display: flex; flex-direction: column; gap: 25px; flex: 2; }
         .category-column { flex: 1; display: flex; flex-direction: column; gap: 15px; }
         .order-section { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-top: 4px solid #e74c3c; flex: 1; }
 
-        /* 當螢幕夠寬 (電腦端) 時，啟動三欄佈局與右側浮動 */
         @media (min-width: 900px) {
             .app-layout { flex-direction: row; align-items: flex-start; }
             .menu-area { flex-direction: row; }
             .order-section { position: sticky; top: 20px; margin-top: 0; height: fit-content; }
+            body { padding-bottom: 20px; }
         }
 
         .menu-category { font-size: 1.3em; color: #e74c3c; font-weight: bold; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; text-transform: uppercase; margin: 0; }
-        
         .menu-item { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 10px; }
         .item-info { width: 100%; }
         .item-name { font-weight: bold; font-size: 1.15em; margin: 0 0 5px 0; color: #2c3e50; }
@@ -40,7 +60,6 @@
         .item-price { font-size: 0.95em; color: #34495e; margin-top: 8px; font-weight: 500; }
         .original-price { text-decoration: line-through; margin-right: 5px; color: #bdc3c7; font-weight: normal; }
         
-        /* 數量輸入與加入按鈕區域 */
         .action-area { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 5px; border-top: 1px dashed #eee; padding-top: 10px; }
         .qty-wrapper { display: flex; align-items: center; gap: 5px; }
         .qty-input { width: 60px; padding: 8px; border-radius: 6px; border: 1px solid #ccc; text-align: center; }
@@ -63,6 +82,13 @@
         .total-line { font-weight: bold; font-size: 1.3em; text-align: right; margin-top: 15px; color: #e74c3c; border-top: 2px solid #e0e0e0; padding-top: 10px; }
         .remove-btn { width: auto; padding: 4px 8px; font-size: 0.8em; background: #95a5a6; border-radius: 4px; margin: 0; }
         .remove-btn:hover { background: #7f8c8d; }
+
+        /* 【Logic】手機版專屬的浮動結帳按鈕 */
+        #mobile-checkout-btn { 
+            display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); 
+            width: 90%; background-color: #2c3e50; color: white; z-index: 1000; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); font-size: 1.1em; border-radius: 50px; padding: 15px;
+        }
     </style>
 </head>
 <body>
@@ -84,7 +110,7 @@
             </div>
         </div>
 
-        <section class="order-section">
+        <section id="checkout-section" class="order-section">
             <h2 style="margin-top: 0; text-align: center; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; color: #2c3e50;">Your Order</h2>
             <ul id="cart-items">
                 <li style="color: #95a5a6; justify-content: center; border: none;">Your cart is empty</li>
@@ -97,10 +123,14 @@
             </select>
 
             <input type="text" id="customer-name" placeholder="Your Name (Required)">
-            <input type="text" id="customer-phone" placeholder="Phone Number (Required)">
+            <input type="tel" id="customer-phone" placeholder="Phone Number (e.g., 6175550198)">
             <button id="submit-order" style="margin-top: 15px; padding: 15px; font-size: 1.1em;">Submit Order</button>
         </section>
     </div>
+
+    <button id="mobile-checkout-btn" onclick="document.getElementById('checkout-section').scrollIntoView({behavior: 'smooth'})">
+        🛒 View Cart ($<span id="mobile-total-price">0.00</span>)
+    </button>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
@@ -108,18 +138,17 @@
 
         // ⚠️ REPLACE THIS WITH YOUR REAL FIREBASE CONFIG ⚠️
         const firebaseConfig = {
-          apiKey: "AIzaSyACsOsE467bbOGrHdkxjUhcdPL-i_F_rNM",
-          authDomain: "sizzle-drizzle-restaurant.firebaseapp.com",
-          projectId: "sizzle-drizzle-restaurant",
-          storageBucket: "sizzle-drizzle-restaurant.firebasestorage.app",
-          messagingSenderId: "713438474887",
-          appId: "1:713438474887:web:f4a1514105ad9beac7be22"
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
         };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // 購物車狀態，現在每個 item 裡面會包含 quantity
         window.cart = [];
         window.total = 0;
 
@@ -147,7 +176,6 @@
                     }
                 } catch (error) {
                     console.error("Error loading menu: ", error);
-                    container.innerHTML = "<p style='color:#e74c3c; font-size:0.9em;'>Failed to load items.</p>";
                 }
             }
         }
@@ -158,7 +186,7 @@
             
             if (data.is_discounted) {
                 finalPrice = data.base_price * data.discount_rate;
-                priceHTML = `<span class="original-price">$${data.base_price.toFixed(2)}</span> <span style="color:#e74c3c; font-weight:bold;">$${finalPrice.toFixed(2)} (Harvard Special)</span>`;
+                priceHTML = `<span class="original-price">$${data.base_price.toFixed(2)}</span> <span style="color:#e74c3c; font-weight:bold;">$${finalPrice.toFixed(2)}</span>`;
             }
 
             let tagsHTML = '<div class="nutrient-badges">';
@@ -171,9 +199,6 @@
             tagsHTML += '</div>';
 
             const isOutOfStock = data.stock <= 0;
-            
-            // 【演算法與防禦】：數量輸入框與加入按鈕
-            // 替換單引號防止 JS 執行錯誤
             const safeName = data.name.replace(/'/g, "\\'"); 
             
             let actionHTML = '';
@@ -185,7 +210,7 @@
                         <span style="font-size:0.9em; color:#7f8c8d;">Qty:</span>
                         <input type="number" id="qty-${id}" class="qty-input" value="1" min="1" max="${data.stock}">
                     </div>
-                    <button class="add-btn" onclick="addToCart('${id}', '${safeName}', ${finalPrice}, ${data.stock})">+ Add to Cart</button>
+                    <button class="add-btn" onclick="addToCart('${id}', '${safeName}', ${finalPrice}, ${data.stock})">+ Add</button>
                 `;
             }
 
@@ -197,9 +222,7 @@
                     ${tagsHTML}
                     <div class="item-price">${priceHTML}</div>
                 </div>
-                <div class="action-area">
-                    ${actionHTML}
-                </div>
+                <div class="action-area">${actionHTML}</div>
             `;
             container.appendChild(itemArticle);
         }
@@ -233,54 +256,42 @@
                         select.appendChild(option);
                     }
                 });
-
                 if (select.options.length === 1) { select.options[0].textContent = "No available slots right now"; }
             } catch (error) { console.error("Error loading time slots: ", error); }
         }
 
-        // --- 核心邏輯升級：購物車聚合 ---
         window.addToCart = function(id, itemName, price, maxStock) {
             const qtyInput = document.getElementById(`qty-${id}`);
             const qtyToAdd = parseInt(qtyInput.value);
 
-            // 【邊界防禦】：阻擋無效數字
             if (isNaN(qtyToAdd) || qtyToAdd <= 0) {
                 alert("Please enter a valid quantity.");
-                qtyInput.value = 1; // 重置為1
+                qtyInput.value = 1; 
                 return;
             }
 
-            // 【嚴謹的邏輯】：尋找購物車內是否已有相同商品
             const existingItem = window.cart.find(item => item.id === id);
-            
             if (existingItem) {
-                // 【邊界防禦】：確保加上現有數量後不會超過 Firebase 上的實體庫存
                 if (existingItem.quantity + qtyToAdd > maxStock) {
                     alert(`Sorry, we only have ${maxStock} portions of ${itemName} left.`);
                     return;
                 }
                 existingItem.quantity += qtyToAdd;
             } else {
-                // 如果購物車沒有，且加入數量大於庫存
                 if (qtyToAdd > maxStock) {
                     alert(`Sorry, we only have ${maxStock} portions of ${itemName} left.`);
                     return;
                 }
-                // 建立新的商品紀錄，包含數量
                 window.cart.push({ id: id, name: itemName, price: price, quantity: qtyToAdd });
             }
 
-            // 更新總價與畫面
             window.total += (price * qtyToAdd);
             updateCartUI();
-            
-            // 成功加入後，將輸入框重置回 1，方便下次操作
             qtyInput.value = 1; 
         };
 
         window.removeFromCart = function(index) {
             const item = window.cart[index];
-            // 扣除該品項的總額 (單價 * 數量)
             window.total -= (item.price * item.quantity);
             window.cart.splice(index, 1);
             updateCartUI();
@@ -289,10 +300,14 @@
         function updateCartUI() {
             const cartList = document.getElementById('cart-items');
             const totalSpan = document.getElementById('total-price');
+            const mobileTotalSpan = document.getElementById('mobile-total-price');
+            const mobileBtn = document.getElementById('mobile-checkout-btn');
+            
             cartList.innerHTML = ''; 
             
             if (window.cart.length === 0) {
                 cartList.innerHTML = '<li style="color: #95a5a6; justify-content: center; border: none;">Your cart is empty</li>';
+                mobileBtn.style.display = 'none'; // 購物車空的時候隱藏按鈕
             } else {
                 window.cart.forEach((item, index) => {
                     const li = document.createElement('li');
@@ -309,9 +324,27 @@
                     `;
                     cartList.appendChild(li);
                 });
+                
+                // 【Logic】如果是在小螢幕，顯示浮動按鈕
+                if (window.innerWidth < 900) {
+                    mobileBtn.style.display = 'block';
+                }
             }
-            totalSpan.textContent = window.total.toFixed(2);
+            
+            const finalTotalStr = window.total.toFixed(2);
+            totalSpan.textContent = finalTotalStr;
+            mobileTotalSpan.textContent = finalTotalStr;
         }
+
+        // 監聽螢幕大小改變，確保浮動按鈕行為正確
+        window.addEventListener('resize', () => {
+            const mobileBtn = document.getElementById('mobile-checkout-btn');
+            if (window.innerWidth >= 900) {
+                mobileBtn.style.display = 'none';
+            } else if (window.cart.length > 0) {
+                mobileBtn.style.display = 'block';
+            }
+        });
 
         document.getElementById('submit-order').addEventListener('click', async () => {
             const nameInput = document.getElementById('customer-name').value.trim();
@@ -323,15 +356,22 @@
             if (!pickupTime) { alert("Please select a pickup time!"); return; }
             if (!nameInput || !phoneInput) { alert("Please enter your name and phone number!"); return; }
 
+            // 【Boundary Check】電話號碼防禦 (過濾非數字字元後檢查長度)
+            const cleanPhone = phoneInput.replace(/\D/g, '');
+            if (cleanPhone.length < 10) {
+                alert("Please enter a valid 10-digit US phone number.");
+                return;
+            }
+
             submitBtn.disabled = true;
             submitBtn.textContent = "Sending Order...";
 
             try {
                 const orderData = {
                     customer: nameInput,
-                    phone: phoneInput,
+                    phone: cleanPhone, // 寫入乾淨的數字格式
                     pickup_slot: pickupTime,
-                    items: window.cart, // 這裡已經自動包含了每個品項的 quantity
+                    items: window.cart,
                     totalAmount: window.total,
                     status: "new",
                     createdAt: serverTimestamp() 
