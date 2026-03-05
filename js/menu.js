@@ -1,76 +1,70 @@
 import { db } from './firebase-config.js';
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// 抽象化：處理 Firebase 的 Map 格式標籤
-function formatNutrientsFromMap(tagsMap) {
-    if (!tagsMap) return "";
-    return Object.entries(tagsMap)
-        .filter(([_, value]) => value === true)
-        .map(([key, _]) => `<span class="nutrient-tag">${key}</span>`)
-        .join('');
-}
-
-function safePrice(price) {
-    const num = parseFloat(price);
-    return isNaN(num) ? "0.00" : num.toFixed(2);
-}
-
-async function fetchMenu() {
-    const menuContainer = document.getElementById('menu-container');
-    if (!menuContainer) return;
+async function loadMenu() {
+    const container = document.getElementById('menu-container');
+    container.innerHTML = '<p>Analyzing ingredients...</p>'; // 載入提示
 
     try {
-        const categoriesSnapshot = await getDocs(collection(db, "menu"));
-        menuContainer.innerHTML = ''; 
+        const querySnapshot = await getDocs(collection(db, "menu_items"));
+        const items = [];
+        querySnapshot.forEach((doc) => {
+            items.push({ id: doc.id, ...doc.data() });
+        });
 
-        for (const catDoc of categoriesSnapshot.docs) {
-            const catData = catDoc.data();
-            const itemsRef = collection(db, "menu", catDoc.id, "items");
-            const itemsSnapshot = await getDocs(itemsRef);
+        // 依據分類進行分組
+        const categories = {
+            "01. Fresh Produce": items.filter(i => i.category === "Fresh Produce"),
+            "02. Chef's Special Dishes": items.filter(i => i.category === "Chef's Special Dishes")
+        };
 
-            if (!itemsSnapshot.empty) {
-                const section = document.createElement('section');
-                section.innerHTML = `<h2 class="menu-section-title">${catData.display_name || catDoc.id}</h2>`;
-                const grid = document.createElement('div');
-                grid.className = 'items-grid';
+        let html = '';
 
-                itemsSnapshot.forEach(itemDoc => {
-                    const item = itemDoc.data();
-                    const basePrice = item.base_price || 0;
-                    const isDiscounted = item.is_discounted === true;
-                    const finalPrice = isDiscounted ? (basePrice * (item.discount_rate || 1)) : basePrice;
+        for (const [categoryName, catItems] of Object.entries(categories)) {
+            if (catItems.length === 0) continue;
 
-                    // 周全的防禦：處理 ID 中的撇號或空格，防止 HTML 語法報錯
-                    const safeId = itemDoc.id.replace(/[^a-z0-9]/gi, '_');
+            html += `<h2 class="menu-section-title">${categoryName}</h2>`;
+            html += `<div class="items-grid">`;
 
-                    grid.innerHTML += `
-                        <div class="item-card">
-                            <h3>${item.name || 'Unnamed Item'}</h3>
-                            <div class="nutrient-container">${formatNutrientsFromMap(item.nutrition_tags)}</div>
-                            <div class="price-row" style="margin: 10px 0; font-weight: 800;">
-                                ${isDiscounted ? 
-                                    `<span style="color:#e63946;">$${safePrice(finalPrice)}</span> 
-                                     <span style="text-decoration:line-through; color:#999; font-size:0.8rem; margin-left:5px;">$${safePrice(basePrice)}</span>` : 
-                                    `<span>$${safePrice(basePrice)}</span>`
-                                }
-                            </div>
-                            <p style="font-size: 0.7rem; color: #888;">Stock: ${item.stock || 0}</p>
-                            <div style="display: flex; gap: 8px; margin-top: auto;">
-                                <input type="number" id="qty-${safeId}" value="1" min="1" style="width: 50px; text-align: center;">
-                                <button class="add-btn" onclick="window.handleAddToCart('${itemDoc.id}', '${item.name}', ${finalPrice}, '${safeId}')">
-                                    Add to Order
-                                </button>
-                            </div>
+            catItems.forEach(item => {
+                // 【嚴謹的邏輯】：將營養素陣列轉換為獨立的 HTML span 標籤
+                const nutrientsHtml = (item.nutrients || [])
+                    .map(n => `<span class="nutrient-tag">${n}</span>`)
+                    .join('');
+
+                const safeId = item.id.replace(/\s+/g, '-');
+
+                html += `
+                    <div class="item-card">
+                        <h3>${item.name}</h3>
+                        
+                        <div class="nutrient-container">
+                            ${nutrientsHtml}
                         </div>
-                    `;
-                });
-                section.appendChild(grid);
-                menuContainer.appendChild(section);
-            }
+                        
+                        <div class="price-row">
+                            <span>$${item.price.toFixed(2)}</span>
+                            <span style="font-size: 0.8rem; color: #888; font-weight: normal;">Stock: ${item.stock}</span>
+                        </div>
+
+                        <div class="add-to-cart-controls">
+                            <input type="number" id="qty-${safeId}" value="1" min="1" max="${item.stock}">
+                            <button onclick="window.handleAddToCart('${item.id}', '${item.name}', ${item.price}, '${safeId}')">Add to Order</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div>`; // 結束 items-grid
         }
+
+        container.innerHTML = html;
+
     } catch (error) {
-        console.error("Menu Sync Error:", error);
-        menuContainer.innerHTML = `<p style="color:red;">Sync Error: ${error.message}</p>`;
+        console.error("Error loading menu:", error);
+        container.innerHTML = `<p style="color:red;">Error loading precision menu. Please check database connection.</p>`;
     }
 }
-fetchMenu();
+
+// 頁面載入時執行
+loadMenu();
