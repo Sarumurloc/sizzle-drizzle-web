@@ -3,7 +3,6 @@ import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/fir
 
 let cart = [];
 
-// 取餐時間演算法
 function getEstimatedPickupTime() {
     const now = new Date();
     const estTime = new Date(now.toLocaleString("en-US", {timeZone: "America/New_York"}));
@@ -11,7 +10,6 @@ function getEstimatedPickupTime() {
     return estTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
 }
 
-// 渲染摘要演算法
 function renderSummary() {
     const emptyMsg = document.getElementById('empty-cart-msg');
     const formContent = document.getElementById('order-form-content');
@@ -31,8 +29,7 @@ function renderSummary() {
     const guestId = document.getElementById('guest-id')?.value.trim() || 'Guest';
     let subtotal = 0;
     
-    let lines = `🛒 Patient Order: ${guestId}\n`;
-    lines += `----------------------------\n`;
+    let lines = `🛒 Patient Order: ${guestId}\n----------------------------\n`;
 
     cart.forEach(item => {
         const itemTotal = item.unitPrice * item.quantity;
@@ -40,17 +37,11 @@ function renderSummary() {
         lines += `• ${item.name} x${item.quantity}: $${itemTotal.toFixed(2)}\n`;
     });
 
-    lines += `----------------------------\n`;
-    lines += `ESTIMATED PICKUP: After ${getEstimatedPickupTime()}\n`;
-    lines += `Standard Total: $${subtotal.toFixed(2)}\n`;
-    lines += `🎓 Harvard Discount: $${(subtotal * 0.9).toFixed(2)}\n`;
-    lines += `----------------------------\n`;
-    lines += `Status: Medical-Grade Precision`;
+    lines += `----------------------------\nESTIMATED PICKUP: After ${getEstimatedPickupTime()}\nStandard Total: $${subtotal.toFixed(2)}\n🎓 Harvard Discount: $${(subtotal * 0.9).toFixed(2)}\n----------------------------\nStatus: Medical-Grade Precision`;
 
     if (summaryText) summaryText.textContent = lines;
 }
 
-// 暴露給 HTML 的加入購物車函數
 window.handleAddToCart = (id, name, price, safeId) => {
     const qtyInput = document.getElementById(`qty-${safeId || id}`);
     const qty = parseInt(qtyInput?.value) || 0;
@@ -65,16 +56,11 @@ window.handleAddToCart = (id, name, price, safeId) => {
     renderSummary();
 };
 
-// 暴露給 HTML 的下單函數
 window.submitOrder = async () => {
     const idField = document.getElementById('guest-id');
     const phoneField = document.getElementById('guest-phone');
-    const idVal = idField?.value.trim();
-    const phoneVal = phoneField?.value.trim();
-    
-    // 邊界檢查
-    if (!idVal || !phoneVal) {
-        alert("Input Error: Guest ID and Phone are required.");
+    if (!idField?.value.trim() || !phoneField?.value.trim()) {
+        alert("Boundary Error: ID and Phone are required.");
         return;
     }
 
@@ -84,15 +70,13 @@ window.submitOrder = async () => {
 
     try {
         const subtotal = cart.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
-
         await addDoc(collection(db, "orders"), {
-            customer: { id: idVal, phone: phoneVal },
+            customer: { id: idField.value, phone: phoneField.value },
             items: cart,
             billing: { standard_total: subtotal, final_total: subtotal * 0.9 },
             created_at: serverTimestamp(),
             status: "pending"
         });
-
         alert("Success! Your nutrition plan is being prepared.");
         cart = [];
         idField.value = '';
@@ -107,10 +91,8 @@ window.submitOrder = async () => {
     }
 };
 
-// 監聽即時輸入
 document.addEventListener('input', (e) => {
     if (e.target.id === 'guest-id') renderSummary();
 });
 
-// 初始化
 renderSummary();
