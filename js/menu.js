@@ -3,7 +3,7 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/f
 
 async function loadMenu() {
     const container = document.getElementById('menu-container');
-    container.innerHTML = '<p>Analyzing ingredients...</p>'; // 載入提示
+    container.innerHTML = '<p>Analyzing ingredients...</p>';
 
     try {
         const querySnapshot = await getDocs(collection(db, "menu_items"));
@@ -12,7 +12,6 @@ async function loadMenu() {
             items.push({ id: doc.id, ...doc.data() });
         });
 
-        // 依據分類進行分組
         const categories = {
             "01. Fresh Produce": items.filter(i => i.category === "Fresh Produce"),
             "02. Chef's Special Dishes": items.filter(i => i.category === "Chef's Special Dishes")
@@ -27,12 +26,24 @@ async function loadMenu() {
             html += `<div class="items-grid">`;
 
             catItems.forEach(item => {
-                // 【嚴謹的邏輯】：將營養素陣列轉換為獨立的 HTML span 標籤
                 const nutrientsHtml = (item.nutrients || [])
                     .map(n => `<span class="nutrient-tag">${n}</span>`)
                     .join('');
 
                 const safeId = item.id.replace(/\s+/g, '-');
+
+                // 【嚴謹的邏輯 (if)】：動態決定價格的顯示範圍與顏色
+                let priceHtml = '';
+                if (item.originalPrice && item.originalPrice > item.price) {
+                    // 如果有原價且大於現價 -> 顯示紅色特價 + 灰色刪除線原價
+                    priceHtml = `
+                        <span class="sale-price">$${item.price.toFixed(2)}</span>
+                        <span class="original-price">$${item.originalPrice.toFixed(2)}</span>
+                    `;
+                } else {
+                    // 一般商品 -> 顯示黑色正常價
+                    priceHtml = `<span class="regular-price">$${item.price.toFixed(2)}</span>`;
+                }
 
                 html += `
                     <div class="item-card">
@@ -43,7 +54,9 @@ async function loadMenu() {
                         </div>
                         
                         <div class="price-row">
-                            <span>$${item.price.toFixed(2)}</span>
+                            <div class="price-display">
+                                ${priceHtml}
+                            </div>
                             <span style="font-size: 0.8rem; color: #888; font-weight: normal;">Stock: ${item.stock}</span>
                         </div>
 
@@ -55,7 +68,7 @@ async function loadMenu() {
                 `;
             });
 
-            html += `</div>`; // 結束 items-grid
+            html += `</div>`; 
         }
 
         container.innerHTML = html;
@@ -66,5 +79,4 @@ async function loadMenu() {
     }
 }
 
-// 頁面載入時執行
 loadMenu();
