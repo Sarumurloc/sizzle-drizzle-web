@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="en-US">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cambridge 健康中式餐盒 | 線上點餐</title>
+    <title>SIZZLE & DRIZZLE | Order Online</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f4f7f6; color: #333; }
-        h1, h2 { color: #2c3e50; text-align: center; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; }
-        .menu-category { margin-top: 20px; font-size: 1.2em; color: #e74c3c; font-weight: bold; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
+        h1 { color: #2c3e50; text-align: center; margin-bottom: 5px; }
+        p.address { text-align: center; color: #7f8c8d; border-bottom: 2px solid #e0e0e0; padding-bottom: 15px; margin-top: 0; }
+        .menu-category { margin-top: 20px; font-size: 1.2em; color: #e74c3c; font-weight: bold; border-bottom: 1px solid #ccc; padding-bottom: 5px; text-transform: uppercase; }
         .menu-item { background: white; padding: 15px; margin-top: 10px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
         .item-info { display: flex; flex-direction: column; width: 70%; }
         .item-name { font-weight: bold; font-size: 1.1em; }
@@ -30,67 +31,63 @@
 </head>
 <body>
 
-    <h1>Cambridge 健康中餐</h1>
-    <p style="text-align: center; color: #7f8c8d;">哈佛周邊的高纖低脂選擇</p>
+    <h1>SIZZLE & DRIZZLE</h1>
+    <p class="address">1220 Massachusetts Ave, Cambridge</p>
 
     <div id="menu-container">
-        <div class="loading">正在從廚房載入最新菜單...</div>
+        <div class="loading">Loading fresh menu from the kitchen...</div>
     </div>
 
     <div class="order-section">
-        <h2>您的訂單</h2>
+        <h2>Your Order</h2>
         <ul id="cart-items">
-            <li style="color: #95a5a6; justify-content: center;">購物車目前是空的</li>
+            <li style="color: #95a5a6; justify-content: center;">Your cart is empty</li>
         </ul>
-        <div class="total-line">總計: $<span id="total-price">0</span></div>
+        <div class="total-line">Total: $<span id="total-price">0.00</span></div>
 
-        <h3 style="margin-top: 25px;">取餐與聯絡資訊</h3>
+        <h3 style="margin-top: 25px;">Pickup & Contact Details</h3>
         
         <select id="pickup-time">
-            <option value="">請選擇取餐時間...</option>
+            <option value="">Select Pickup Time...</option>
         </select>
 
-        <input type="text" id="customer-name" placeholder="您的姓名 (必填)">
-        <input type="text" id="customer-phone" placeholder="聯絡電話 (必填)">
-        <button id="submit-order">確認送出訂單</button>
+        <input type="text" id="customer-name" placeholder="Your Name (Required)">
+        <input type="text" id="customer-phone" placeholder="Phone Number (Required)">
+        <button id="submit-order">Submit Order</button>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, serverTimestamp, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-        // ⚠️ 請替換成你的 Firebase 設定 ⚠️
+        // ⚠️ REPLACE THIS WITH YOUR FIREBASE CONFIG ⚠️
         const firebaseConfig = {
-          apiKey: "AIzaSyACsOsE467bbOGrHdkxjUhcdPL-i_F_rNM",
-          authDomain: "sizzle-drizzle-restaurant.firebaseapp.com",
-          projectId: "sizzle-drizzle-restaurant",
-          storageBucket: "sizzle-drizzle-restaurant.firebasestorage.app",
-          messagingSenderId: "713438474887",
-          appId: "1:713438474887:web:f4a1514105ad9beac7be22"
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
         };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // 狀態管理
         window.cart = [];
         window.total = 0;
 
-        // 初始化執行
         async function initApp() {
             await loadMenu();
             await loadPickupSlots();
         }
 
-        // --- 核心邏輯：載入菜單 ---
         async function loadMenu() {
             const container = document.getElementById('menu-container');
-            container.innerHTML = ''; // 清除 Loading 文字
+            container.innerHTML = ''; 
 
-            // 【明確的範圍 for】：定義我們要去哪些集合抓資料
             const categories = [
-                { path: 'menu/01_fresh_produce/items', title: '生鮮特選' },
-                { path: 'menu/02_chinese_dishes/items', title: '健康熟食' }
+                { path: 'menu/01_fresh_produce/items', title: 'Fresh Produce' },
+                { path: 'menu/02_chinese_dishes/items', title: 'Healthy Chinese Dishes' }
             ];
 
             for (const cat of categories) {
@@ -104,42 +101,37 @@
                         container.appendChild(catTitle);
 
                         querySnapshot.forEach((doc) => {
-                            const data = doc.data();
-                            renderMenuItem(container, data, doc.id);
+                            renderMenuItem(container, doc.data(), doc.id);
                         });
                     }
                 } catch (error) {
-                    console.error("讀取菜單失敗: ", error);
+                    console.error("Error loading menu: ", error);
                 }
             }
         }
 
-        // --- 核心邏輯：渲染單一菜色 ---
         function renderMenuItem(container, data, id) {
-            // 【嚴謹的邏輯 if】：計算折扣與價格
             let finalPrice = data.base_price;
-            let priceHTML = `$${finalPrice}`;
+            let priceHTML = `$${finalPrice.toFixed(2)}`;
             
             if (data.is_discounted) {
                 finalPrice = data.base_price * data.discount_rate;
-                priceHTML = `<span class="original-price">$${data.base_price}</span> <span style="color:#e74c3c; font-weight:bold;">$${finalPrice} (哈佛特惠)</span>`;
+                priceHTML = `<span class="original-price">$${data.base_price.toFixed(2)}</span> <span style="color:#e74c3c; font-weight:bold;">$${finalPrice.toFixed(2)} (Harvard Special)</span>`;
             }
 
-            // 【抽象化】：將營養標籤轉化為可讀文字
             let tags = [];
             if(data.nutrition_tags) {
-                if(data.nutrition_tags.Protein) tags.push("高蛋白");
-                if(data.nutrition_tags.Fiber) tags.push("高纖");
-                if(data.nutrition_tags.Starch) tags.push("澱粉");
-                if(data.nutrition_tags['Fats / Lipids'] || data.nutrition_tags.Fats) tags.push("優質脂肪");
+                if(data.nutrition_tags.Protein) tags.push("High Protein");
+                if(data.nutrition_tags.Fiber) tags.push("High Fiber");
+                if(data.nutrition_tags.Starch) tags.push("Carbs");
+                if(data.nutrition_tags['Fats / Lipids'] || data.nutrition_tags.Fats) tags.push("Healthy Fats");
             }
             const tagsText = tags.length > 0 ? tags.join(" | ") : "";
 
-            // 【周全的防禦 Boundary Check】：阻擋庫存為 0 的商品
             const isOutOfStock = data.stock <= 0;
             const btnHTML = isOutOfStock 
-                ? `<button class="add-btn" disabled>已售完</button>`
-                : `<button class="add-btn" onclick="addToCart('${data.name}', ${finalPrice})">+ 加入</button>`;
+                ? `<button class="add-btn" disabled>Sold Out</button>`
+                : `<button class="add-btn" onclick="addToCart('${data.name}', ${finalPrice})">+ Add</button>`;
 
             const itemDiv = document.createElement('div');
             itemDiv.className = 'menu-item';
@@ -154,34 +146,54 @@
             container.appendChild(itemDiv);
         }
 
-        // --- 核心邏輯：載入取餐時段 ---
         async function loadPickupSlots() {
             const select = document.getElementById('pickup-time');
+            
+            // 【嚴謹的邏輯 if & Boundary Check】：取得絕對的美東時間 (Harvard Time)
+            const nowET = new Date(new Date().toLocaleString("en-US", {timeZone: "America/New_York"}));
+            const currentHour = nowET.getHours();
+            const currentMinute = nowET.getMinutes();
+            // 轉化為 "HHMM" 格式以便比對，例如 10:05 會變成 "1005"
+            const currentTimeStr = (currentHour < 10 ? '0' : '') + currentHour + (currentMinute < 10 ? '0' : '') + currentMinute;
+
             try {
                 const querySnapshot = await getDocs(collection(db, "pickup_slots"));
-                
-                // 【明確的範圍 for】：排序時段，確保下拉選單按照時間順序
                 const slots = [];
                 querySnapshot.forEach((doc) => slots.push({ id: doc.id, ...doc.data() }));
                 slots.sort((a, b) => a.id.localeCompare(b.id)); 
 
                 slots.forEach((slot) => {
-                    // 【周全的防禦 Boundary Check】：只顯示 active 且未滿單的時段
-                    if (slot.is_active && slot.current_booked < slot.max_capacity) {
+                    // 檢查 1: 廚房開關是否開啟且未滿單
+                    const isAvailable = slot.is_active && slot.current_booked < slot.max_capacity;
+                    // 檢查 2: 該時段是否大於哈佛當地的現在時間 (防止點擊過去的時間)
+                    const isFuture = slot.id > currentTimeStr;
+
+                    if (isAvailable && isFuture) {
                         const option = document.createElement('option');
-                        option.value = slot.id; // 例如 "1000"
-                        // 將 1000 格式化為 10:00 顯示
-                        const timeDisplay = slot.id.substring(0,2) + ":" + slot.id.substring(2,4);
-                        option.textContent = `${timeDisplay} (剩餘 ${slot.max_capacity - slot.current_booked} 份額度)`;
+                        option.value = slot.id; 
+                        
+                        // 將 1300 轉換為 1:00 PM 的美式格式 (可選，這裡保持軍用/24小時制或手動格式化)
+                        let hour = parseInt(slot.id.substring(0,2));
+                        const min = slot.id.substring(2,4);
+                        const ampm = hour >= 12 ? 'PM' : 'AM';
+                        hour = hour % 12;
+                        hour = hour ? hour : 12; // 0點轉為12
+                        const timeDisplay = `${hour}:${min} ${ampm}`;
+
+                        option.textContent = `${timeDisplay} (${slot.max_capacity - slot.current_booked} slots left)`;
                         select.appendChild(option);
                     }
                 });
+
+                if (select.options.length === 1) {
+                    select.options[0].textContent = "No available slots right now";
+                }
+
             } catch (error) {
-                console.error("讀取時段失敗: ", error);
+                console.error("Error loading time slots: ", error);
             }
         }
 
-        // --- 購物車與 UI 更新 ---
         window.addToCart = function(itemName, price) {
             window.cart.push({ name: itemName, price: price });
             window.total += price;
@@ -194,31 +206,29 @@
             cartList.innerHTML = ''; 
             
             if (window.cart.length === 0) {
-                cartList.innerHTML = '<li style="color: #95a5a6; justify-content: center;">購物車目前是空的</li>';
+                cartList.innerHTML = '<li style="color: #95a5a6; justify-content: center;">Your cart is empty</li>';
             } else {
                 window.cart.forEach(item => {
                     const li = document.createElement('li');
-                    li.innerHTML = `<span>${item.name}</span> <span>$${item.price}</span>`;
+                    li.innerHTML = `<span>${item.name}</span> <span>$${item.price.toFixed(2)}</span>`;
                     cartList.appendChild(li);
                 });
             }
-            totalSpan.textContent = window.total;
+            totalSpan.textContent = window.total.toFixed(2);
         }
 
-        // --- 送出訂單 ---
         document.getElementById('submit-order').addEventListener('click', async () => {
             const nameInput = document.getElementById('customer-name').value.trim();
             const phoneInput = document.getElementById('customer-phone').value.trim();
             const pickupTime = document.getElementById('pickup-time').value;
             const submitBtn = document.getElementById('submit-order');
 
-            // 【周全的防禦 Boundary Check】
-            if (window.cart.length === 0) { alert("請先加入餐點！"); return; }
-            if (!pickupTime) { alert("請選擇取餐時間！"); return; }
-            if (!nameInput || !phoneInput) { alert("請填寫姓名與電話！"); return; }
+            if (window.cart.length === 0) { alert("Please add items to your cart first!"); return; }
+            if (!pickupTime) { alert("Please select a pickup time!"); return; }
+            if (!nameInput || !phoneInput) { alert("Please enter your name and phone number!"); return; }
 
             submitBtn.disabled = true;
-            submitBtn.textContent = "訂單傳送中...";
+            submitBtn.textContent = "Sending Order...";
 
             try {
                 const orderData = {
@@ -228,31 +238,29 @@
                     items: window.cart,
                     totalAmount: window.total,
                     status: "new",
-                    createdAt: serverTimestamp()
+                    createdAt: serverTimestamp() // Firebase 會自動處理 UTC 時間，這對資料庫最安全
                 };
 
                 await addDoc(collection(db, "orders"), orderData);
                 
-                alert(`訂單成功送出！請於 ${pickupTime.substring(0,2)}:${pickupTime.substring(2,4)} 前往取餐。`);
+                alert(`Order submitted successfully! See you at ${pickupTime.substring(0,2)}:${pickupTime.substring(2,4)}.`);
                 
-                // 重置狀態
                 window.cart = [];
                 window.total = 0;
                 updateCartUI();
                 document.getElementById('customer-name').value = '';
                 document.getElementById('customer-phone').value = '';
-                document.getElementById('pickup-time').value = ''; // 重置下拉選單
+                document.getElementById('pickup-time').value = ''; 
 
             } catch (error) {
-                console.error("送出訂單失敗: ", error);
-                alert("系統異常，請稍後再試。");
+                console.error("Order failed: ", error);
+                alert("System error. Please try again later.");
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.textContent = "確認送出訂單";
+                submitBtn.textContent = "Submit Order";
             }
         });
 
-        // 啟動應用程式
         initApp();
     </script>
 </body>
