@@ -3,26 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SIZZLE & DRIZZLE in Cambridge. Data-driven, healthy Chinese cuisine near Harvard. Order fresh produce and chef's specials online.">
     <title>SIZZLE & DRIZZLE | Order Online</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f4f7f6; color: #333; }
-        h1 { color: #2c3e50; text-align: center; margin-bottom: 5px; }
-        p.address { text-align: center; color: #7f8c8d; border-bottom: 2px solid #e0e0e0; padding-bottom: 15px; margin-top: 0; }
-        .menu-category { margin-top: 20px; font-size: 1.2em; color: #e74c3c; font-weight: bold; border-bottom: 1px solid #ccc; padding-bottom: 5px; text-transform: uppercase; }
-        .menu-item { background: white; padding: 15px; margin-top: 10px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
+        h1 { color: #2c3e50; text-align: center; margin-bottom: 5px; letter-spacing: 1px; }
+        p.address { text-align: center; color: #7f8c8d; border-bottom: 2px solid #e0e0e0; padding-bottom: 15px; margin-top: 0; font-size: 0.9em; }
+        
+        /* 菜單分類標題 SEO 優化樣式 */
+        .menu-category { margin-top: 25px; font-size: 1.3em; color: #e74c3c; font-weight: bold; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; text-transform: uppercase; }
+        
+        /* 菜色卡片 */
+        .menu-item { background: white; padding: 15px; margin-top: 15px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: flex-start; }
         .item-info { display: flex; flex-direction: column; width: 70%; }
-        .item-name { font-weight: bold; font-size: 1.1em; }
-        .item-tags { font-size: 0.75em; color: #27ae60; margin-top: 4px; }
-        .item-price { font-size: 0.9em; color: #7f8c8d; margin-top: 4px; }
-        .original-price { text-decoration: line-through; margin-right: 5px; color: #bdc3c7; }
-        .order-section { background: white; padding: 20px; border-radius: 8px; margin-top: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-top: 4px solid #e74c3c; }
+        .item-name { font-weight: bold; font-size: 1.15em; margin: 0 0 5px 0; color: #2c3e50; }
+        
+        /* 營養素視覺化徽章 UI 優化 */
+        .nutrient-badges { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+        .badge { padding: 3px 8px; border-radius: 12px; font-size: 0.7em; font-weight: bold; color: white; text-transform: uppercase; letter-spacing: 0.5px; }
+        .badge.protein { background-color: #3498db; } /* 藍色代表蛋白質 */
+        .badge.fiber { background-color: #2ecc71; } /* 綠色代表纖維 */
+        .badge.starch { background-color: #f1c40f; color: #333; } /* 黃色代表澱粉/碳水 */
+        .badge.fats { background-color: #e67e22; } /* 橘色代表優質脂肪 */
+        
+        .item-price { font-size: 0.95em; color: #34495e; margin-top: 8px; font-weight: 500; }
+        .original-price { text-decoration: line-through; margin-right: 5px; color: #bdc3c7; font-weight: normal; }
+        
+        .order-section { background: white; padding: 20px; border-radius: 8px; margin-top: 35px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-top: 4px solid #e74c3c; }
         input, select, button { padding: 12px; margin: 8px 0; border-radius: 6px; border: 1px solid #ccc; width: 100%; box-sizing: border-box; font-size: 1em; }
         button { background-color: #e74c3c; color: white; border: none; cursor: pointer; font-weight: bold; transition: 0.3s; }
         button:hover { background-color: #c0392b; }
         button:disabled { background-color: #bdc3c7; cursor: not-allowed; }
-        .add-btn { width: auto; background-color: #27ae60; padding: 8px 15px; font-size: 0.9em; }
+        .add-btn { width: auto; background-color: #27ae60; padding: 10px 15px; font-size: 0.9em; margin-top: 5px; }
         .add-btn:hover { background-color: #2ecc71; }
         .add-btn:disabled { background-color: #bdc3c7; cursor: not-allowed; }
+        
         #cart-items { list-style-type: none; padding: 0; }
         #cart-items li { border-bottom: 1px dashed #ccc; padding: 8px 0; display: flex; justify-content: space-between;}
         .total-line { font-weight: bold; font-size: 1.2em; text-align: right; margin-top: 15px; color: #e74c3c; }
@@ -31,22 +46,23 @@
 </head>
 <body>
 
-    <h1>SIZZLE & DRIZZLE</h1>
-    <p class="address">1220 Massachusetts Ave, Cambridge</p>
+    <header>
+        <h1>SIZZLE & DRIZZLE</h1>
+        <p class="address">1220 Massachusetts Ave, Cambridge</p>
+    </header>
 
-    <div id="menu-container">
+    <main id="menu-container">
         <div class="loading">Loading fresh menu from the kitchen...</div>
-    </div>
+    </main>
 
-    <div class="order-section">
+    <section class="order-section">
         <h2>Your Order</h2>
         <ul id="cart-items">
             <li style="color: #95a5a6; justify-content: center;">Your cart is empty</li>
         </ul>
         <div class="total-line">Total: $<span id="total-price">0.00</span></div>
 
-        <h3 style="margin-top: 25px;">Pickup & Contact Details</h3>
-        
+        <h3 style="margin-top: 25px;">Pickup Details</h3>
         <select id="pickup-time">
             <option value="">Select Pickup Time...</option>
         </select>
@@ -54,7 +70,7 @@
         <input type="text" id="customer-name" placeholder="Your Name (Required)">
         <input type="text" id="customer-phone" placeholder="Phone Number (Required)">
         <button id="submit-order">Submit Order</button>
-    </div>
+    </section>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
@@ -85,9 +101,10 @@
             const container = document.getElementById('menu-container');
             container.innerHTML = ''; 
 
+            // 【明確的範圍】：將資料庫路徑對應到你指定的兩個大類別
             const categories = [
-                { path: 'menu/01_fresh_produce/items', title: 'Fresh Produce' },
-                { path: 'menu/02_chinese_dishes/items', title: 'Healthy Chinese Dishes' }
+                { path: 'menu/01_fresh_produce/items', title: '1. Fresh Produce' },
+                { path: 'menu/02_chinese_dishes/items', title: "2. Chef's Specials" }
             ];
 
             for (const cat of categories) {
@@ -95,7 +112,8 @@
                     const querySnapshot = await getDocs(collection(db, cat.path));
                     
                     if (!querySnapshot.empty) {
-                        const catTitle = document.createElement('div');
+                        // SEO: 使用 <h2> 標籤讓爬蟲看懂架構
+                        const catTitle = document.createElement('h2');
                         catTitle.className = 'menu-category';
                         catTitle.textContent = cat.title;
                         container.appendChild(catTitle);
@@ -119,41 +137,41 @@
                 priceHTML = `<span class="original-price">$${data.base_price.toFixed(2)}</span> <span style="color:#e74c3c; font-weight:bold;">$${finalPrice.toFixed(2)} (Harvard Special)</span>`;
             }
 
-            let tags = [];
+            // 【嚴謹的邏輯】：將 Boolean 轉化為直觀的色彩 Badge
+            let tagsHTML = '<div class="nutrient-badges">';
             if(data.nutrition_tags) {
-                if(data.nutrition_tags.Protein) tags.push("High Protein");
-                if(data.nutrition_tags.Fiber) tags.push("High Fiber");
-                if(data.nutrition_tags.Starch) tags.push("Carbs");
-                if(data.nutrition_tags['Fats / Lipids'] || data.nutrition_tags.Fats) tags.push("Healthy Fats");
+                if(data.nutrition_tags.Protein) tagsHTML += `<span class="badge protein">Protein</span>`;
+                if(data.nutrition_tags.Fiber) tagsHTML += `<span class="badge fiber">Fiber</span>`;
+                if(data.nutrition_tags.Starch) tagsHTML += `<span class="badge starch">Carbs</span>`;
+                if(data.nutrition_tags['Fats / Lipids'] || data.nutrition_tags.Fats) tagsHTML += `<span class="badge fats">Fats</span>`;
             }
-            const tagsText = tags.length > 0 ? tags.join(" | ") : "";
+            tagsHTML += '</div>';
 
             const isOutOfStock = data.stock <= 0;
             const btnHTML = isOutOfStock 
                 ? `<button class="add-btn" disabled>Sold Out</button>`
                 : `<button class="add-btn" onclick="addToCart('${data.name}', ${finalPrice})">+ Add</button>`;
 
-            const itemDiv = document.createElement('div');
-            itemDiv.className = 'menu-item';
-            itemDiv.innerHTML = `
+            // SEO: 使用 <article> 包裝單一菜色，標題用 <h3>
+            const itemArticle = document.createElement('article');
+            itemArticle.className = 'menu-item';
+            itemArticle.innerHTML = `
                 <div class="item-info">
-                    <span class="item-name">${data.name}</span>
-                    <span class="item-tags">${tagsText}</span>
-                    <span class="item-price">${priceHTML}</span>
+                    <h3 class="item-name">${data.name}</h3>
+                    ${tagsHTML}
+                    <div class="item-price">${priceHTML}</div>
                 </div>
-                ${btnHTML}
+                <div>${btnHTML}</div>
             `;
-            container.appendChild(itemDiv);
+            container.appendChild(itemArticle);
         }
 
         async function loadPickupSlots() {
             const select = document.getElementById('pickup-time');
             
-            // 【嚴謹的邏輯 if & Boundary Check】：取得絕對的美東時間 (Harvard Time)
             const nowET = new Date(new Date().toLocaleString("en-US", {timeZone: "America/New_York"}));
             const currentHour = nowET.getHours();
             const currentMinute = nowET.getMinutes();
-            // 轉化為 "HHMM" 格式以便比對，例如 10:05 會變成 "1005"
             const currentTimeStr = (currentHour < 10 ? '0' : '') + currentHour + (currentMinute < 10 ? '0' : '') + currentMinute;
 
             try {
@@ -163,21 +181,18 @@
                 slots.sort((a, b) => a.id.localeCompare(b.id)); 
 
                 slots.forEach((slot) => {
-                    // 檢查 1: 廚房開關是否開啟且未滿單
                     const isAvailable = slot.is_active && slot.current_booked < slot.max_capacity;
-                    // 檢查 2: 該時段是否大於哈佛當地的現在時間 (防止點擊過去的時間)
                     const isFuture = slot.id > currentTimeStr;
 
                     if (isAvailable && isFuture) {
                         const option = document.createElement('option');
                         option.value = slot.id; 
                         
-                        // 將 1300 轉換為 1:00 PM 的美式格式 (可選，這裡保持軍用/24小時制或手動格式化)
                         let hour = parseInt(slot.id.substring(0,2));
                         const min = slot.id.substring(2,4);
                         const ampm = hour >= 12 ? 'PM' : 'AM';
                         hour = hour % 12;
-                        hour = hour ? hour : 12; // 0點轉為12
+                        hour = hour ? hour : 12; 
                         const timeDisplay = `${hour}:${min} ${ampm}`;
 
                         option.textContent = `${timeDisplay} (${slot.max_capacity - slot.current_booked} slots left)`;
@@ -208,13 +223,24 @@
             if (window.cart.length === 0) {
                 cartList.innerHTML = '<li style="color: #95a5a6; justify-content: center;">Your cart is empty</li>';
             } else {
-                window.cart.forEach(item => {
+                window.cart.forEach((item, index) => {
                     const li = document.createElement('li');
-                    li.innerHTML = `<span>${item.name}</span> <span>$${item.price.toFixed(2)}</span>`;
+                    // 加上移除按鈕，提升購物車 UX
+                    li.innerHTML = `
+                        <span>${item.name}</span> 
+                        <span>$${item.price.toFixed(2)} <button style="width:auto; padding: 2px 6px; margin-left:10px; font-size:0.8em; background:#95a5a6;" onclick="removeFromCart(${index}, ${item.price})">X</button></span>
+                    `;
                     cartList.appendChild(li);
                 });
             }
             totalSpan.textContent = window.total.toFixed(2);
+        }
+
+        // 新增：讓客人可以從購物車刪除不小心點錯的餐點 (防禦性 UX)
+        window.removeFromCart = function(index, price) {
+            window.cart.splice(index, 1);
+            window.total -= price;
+            updateCartUI();
         }
 
         document.getElementById('submit-order').addEventListener('click', async () => {
@@ -238,7 +264,7 @@
                     items: window.cart,
                     totalAmount: window.total,
                     status: "new",
-                    createdAt: serverTimestamp() // Firebase 會自動處理 UTC 時間，這對資料庫最安全
+                    createdAt: serverTimestamp() 
                 };
 
                 await addDoc(collection(db, "orders"), orderData);
