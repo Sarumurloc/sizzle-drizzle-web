@@ -190,7 +190,7 @@
             }
         }
 
-        function renderMenuItem(container, data, id) {
+	function renderMenuItem(container, data, id) {
             let finalPrice = data.base_price;
             let priceHTML = `$${finalPrice.toFixed(2)}`;
             
@@ -207,6 +207,10 @@
                 if(data.nutrition_tags['Fats / Lipids'] || data.nutrition_tags.Fats) tagsHTML += `<span class="badge fats">Fats</span>`;
             }
             tagsHTML += '</div>';
+
+            // 【新增的嚴謹邏輯與防禦】：抓取 description 欄位
+            const descText = data.description ? data.description : '';
+            const descHTML = descText ? `<p style="font-size: 0.9em; color: #7f8c8d; margin: 8px 0 5px 0; line-height: 1.4;">${descText}</p>` : '';
 
             const isOutOfStock = data.stock <= 0;
             const safeName = data.name.replace(/'/g, "\\'"); 
@@ -226,9 +230,11 @@
 
             const itemArticle = document.createElement('article');
             itemArticle.className = 'menu-item';
+            // 將 descHTML 塞入標題和標籤的中間
             itemArticle.innerHTML = `
                 <div class="item-info">
                     <h3 class="item-name">${data.name}</h3>
+                    ${descHTML} 
                     ${tagsHTML}
                     <div class="item-price">${priceHTML}</div>
                 </div>
