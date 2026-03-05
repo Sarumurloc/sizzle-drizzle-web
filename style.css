@@ -2,6 +2,7 @@
     --harvard-red: #A51C30;
 }
 
+/* 購物車區域的固定定位防禦 */
 .cart-section {
     position: fixed;
     top: 120px;      
@@ -15,7 +16,7 @@
     background: rgba(255, 255, 255, 0.98);
     padding: 20px;
     border-radius: 15px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
     display: flex;
     flex-direction: column;
     height: 100%; 
@@ -23,9 +24,9 @@
     overflow: hidden; 
 }
 
-/* JS 控制點：初始隱藏，渲染時由 JS 設為 flex */
+/* JS 控制的表單容器 */
 #order-form-content {
-    display: none; 
+    display: none; /* 預設隱藏，由 JS 控制 */
     flex-direction: column;
     height: 100%;
     flex: 1;
@@ -47,6 +48,7 @@
     box-sizing: border-box;
 }
 
+/* 訂單摘要滾動區域演算法 */
 #summary-container {
     flex: 1; 
     min-height: 0; 
@@ -62,7 +64,7 @@
     font-family: 'Courier New', monospace;
     font-size: 0.82rem;
     flex: 1;
-    overflow-y: auto; /* 核心防禦：僅此區域可滾動 */
+    overflow-y: auto; /* 核心防禦：僅摘要內容可滾動 */
     overflow-x: hidden;  
     white-space: pre-wrap; 
     border: 1px dashed #cbd5e0;
@@ -78,7 +80,7 @@
     border-radius: 8px;
     font-weight: bold;
     cursor: pointer;
-    flex-shrink: 0; 
+    flex-shrink: 0; /* 禁止壓縮按鈕 */
     margin-top: auto; 
     transition: background-color 0.2s ease;
 }
