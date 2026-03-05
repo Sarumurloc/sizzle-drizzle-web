@@ -2,92 +2,108 @@
     --harvard-red: #A51C30;
 }
 
-/* 購物車區域的固定定位防禦 */
-.cart-section {
-    position: fixed;
-    top: 120px;      
-    bottom: 40px;    
-    right: 40px;
-    width: 360px;
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: #fcfaf7;
+    color: #333;
+}
+
+/* --- 導覽列優化：解決定位點問題 --- */
+.navbar {
+    display: flex;
+    justify-content: space-between; /* 關鍵：強制將 Logo 往左推，連結往右推 */
+    align-items: center;
+    padding: 15px 50px;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
     z-index: 1000;
 }
 
-.cart-card {
-    background: rgba(255, 255, 255, 0.98);
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-    display: flex;
-    flex-direction: column;
-    height: 100%; 
-    box-sizing: border-box;
-    overflow: hidden; 
+.nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: var(--harvard-red);
 }
 
-/* JS 控制的表單容器 */
-#order-form-content {
-    display: none; /* 預設隱藏，由 JS 控制 */
+.nav-links a {
+    text-decoration: none;
+    color: #4a5568;
+    margin-left: 30px; /* 連結間距 */
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.nav-links a:hover {
+    color: var(--harvard-red);
+}
+
+/* --- 購物車排版優化 --- */
+.container {
+    max-width: 1200px;
+    margin: 40px auto;
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 40px;
+    padding: 0 20px;
+}
+
+.cart-section {
+    position: sticky;
+    top: 100px;
+    height: calc(100vh - 140px); /* 保持在視窗內，不遮擋頁首 */
+}
+
+.cart-card {
+    background: white;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    display: flex;
     flex-direction: column;
     height: 100%;
+    box-sizing: border-box;
+}
+
+#order-form-content {
+    display: none; 
+    flex-direction: column;
     flex: 1;
     min-height: 0;
 }
 
-.cart-header-fields {
-    margin-bottom: 10px;
-    flex-shrink: 0; 
-}
-
-.cart-header-fields input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 8px;
-    border: 1px solid #cbd5e0;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    box-sizing: border-box;
-}
-
-/* 訂單摘要滾動區域演算法 */
-#summary-container {
-    flex: 1; 
-    min-height: 0; 
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 15px;
-}
-
 #summary-text {
     background: #f8f9fa;
-    padding: 12px;
+    padding: 15px;
     border-radius: 8px;
     font-family: 'Courier New', monospace;
-    font-size: 0.82rem;
+    font-size: 0.85rem;
     flex: 1;
-    overflow-y: auto; /* 核心防禦：僅摘要內容可滾動 */
-    overflow-x: hidden;  
-    white-space: pre-wrap; 
+    overflow-y: auto; /* 內容過長時自動產生捲軸 */
     border: 1px dashed #cbd5e0;
-    margin: 0;
+    white-space: pre-wrap;
+    margin: 10px 0;
 }
 
 .place-order-btn {
     width: 100%;
-    padding: 15px;
-    background: var(--harvard-red); 
+    padding: 18px;
+    background: var(--harvard-red);
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     font-weight: bold;
     cursor: pointer;
-    flex-shrink: 0; /* 禁止壓縮按鈕 */
-    margin-top: auto; 
-    transition: background-color 0.2s ease;
+    flex-shrink: 0; /* 防止按鈕被擠壓 */
 }
 
-.place-order-btn:hover { background: #8a1527; }
-
-.place-order-btn:disabled {
-    background: #cbd5e0;
-    cursor: not-allowed;
+.announcement-banner {
+    background: #fff9db;
+    text-align: center;
+    padding: 8px;
+    font-size: 0.85rem;
+    border-bottom: 1px solid #f9eba0;
 }
