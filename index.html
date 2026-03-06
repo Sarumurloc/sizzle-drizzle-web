@@ -3,12 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
     <title>SIZZLE & DRIZZLE | Order Online</title>
     <meta name="description" content="Data-driven, healthy Taiwanese cuisine in Cambridge near Harvard. Crafted by a Medical PhD chef.">
     <meta property="og:title" content="SIZZLE & DRIZZLE | Healthy Taiwanese Cuisine">
-    <meta property="og:description" content="Harvard's choice for data-driven, healthy Taiwanese food. Order online now.">
-    <meta property="og:type" content="website">
     <meta property="og:image" content="logo.png">
     <link rel="icon" type="image/png" href="logo.png">
     
@@ -33,53 +30,36 @@
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; background-color: #f4f7f6; color: #333; padding-bottom: 80px; }
         h1 { color: #2c3e50; text-align: center; margin-bottom: 5px; letter-spacing: 1px; font-weight: 800; }
         p.address { text-align: center; color: #7f8c8d; border-bottom: 2px solid #e0e0e0; padding-bottom: 15px; margin-top: 0; font-size: 0.9em; }
-        
         .app-layout { display: flex; flex-direction: column; gap: 25px; margin-top: 20px; }
         .menu-area { display: flex; flex-direction: column; gap: 25px; flex: 2; }
         .category-column { flex: 1; display: flex; flex-direction: column; gap: 15px; }
         .order-section { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-top: 4px solid #e74c3c; flex: 1; }
-
         @media (min-width: 900px) {
             .app-layout { flex-direction: row; align-items: flex-start; }
             .menu-area { flex-direction: row; }
             .order-section { position: sticky; top: 20px; margin-top: 0; height: fit-content; }
             body { padding-bottom: 20px; }
         }
-
         .menu-category { font-size: 1.3em; color: #e74c3c; font-weight: bold; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; text-transform: uppercase; margin: 0; }
         .menu-item { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 10px; }
-        .item-info { width: 100%; }
         .item-name { font-weight: bold; font-size: 1.15em; margin: 0 0 5px 0; color: #2c3e50; }
-        
         .nutrient-badges { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
         .badge { padding: 3px 8px; border-radius: 12px; font-size: 0.7em; font-weight: bold; color: white; text-transform: uppercase; letter-spacing: 0.5px; }
         .badge.protein { background-color: #3498db; } 
         .badge.fiber { background-color: #2ecc71; } 
         .badge.starch { background-color: #f1c40f; color: #333; } 
         .badge.fats { background-color: #e67e22; } 
-        
         .item-price { font-size: 0.95em; color: #34495e; margin-top: 8px; font-weight: 500; }
         .original-price { text-decoration: line-through; margin-right: 5px; color: #bdc3c7; font-weight: normal; }
-        
         .action-area { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 5px; border-top: 1px dashed #eee; padding-top: 10px; }
-        .qty-wrapper { display: flex; align-items: center; gap: 5px; }
         .qty-input { width: 60px; padding: 8px; border-radius: 6px; border: 1px solid #ccc; text-align: center; }
-        
         input, select, button { padding: 12px; border-radius: 6px; border: 1px solid #ccc; width: 100%; box-sizing: border-box; font-size: 1em; }
         button { background-color: #e74c3c; color: white; border: none; cursor: pointer; font-weight: bold; transition: 0.3s; }
         button:hover { background-color: #c0392b; }
-        button:disabled { background-color: #bdc3c7; cursor: not-allowed; }
         .add-btn { background-color: #27ae60; padding: 8px 15px; font-size: 0.9em; width: auto; flex-grow: 1; }
-        
-        #cart-items { list-style-type: none; padding: 0; margin-bottom: 0; }
-        #cart-items li { border-bottom: 1px dashed #ccc; padding: 10px 0; display: flex; justify-content: space-between; align-items: center; font-size: 0.95em; }
+        #cart-items { list-style-type: none; padding: 0; margin-bottom: 0; font-size: 0.95em; }
         .total-line { font-weight: bold; font-size: 1.3em; text-align: right; margin-top: 15px; color: #e74c3c; border-top: 2px solid #e0e0e0; padding-top: 10px; }
-        
-        #mobile-checkout-btn { 
-            display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); 
-            width: 90%; background-color: #2c3e50; color: white; z-index: 1000; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3); font-size: 1.1em; border-radius: 50px; padding: 15px;
-        }
+        #mobile-checkout-btn { display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; background-color: #2c3e50; color: white; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.3); font-size: 1.1em; border-radius: 50px; padding: 15px; }
     </style>
 </head>
 <body>
@@ -97,14 +77,45 @@
     </header>
 
     <nav style="position: sticky; top: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(5px); z-index: 1000; display: flex; justify-content: center; gap: 30px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); font-family: 'Segoe UI', sans-serif;">
-        <a href="#story" style="text-decoration: none; color: #2c3e50; font-weight: 600; font-size: 0.9em; text-transform: uppercase;">Our Story</a>
-        <a href="#science" style="text-decoration: none; color: #2c3e50; font-weight: 600; font-size: 0.9em; text-transform: uppercase;">Science</a>
-        <a href="#menu-start" style="text-decoration: none; color: #e74c3c; font-weight: 700; font-size: 0.9em; text-transform: uppercase;">Menu</a>
+        <a href="#story" style="text-decoration: none; color: #2c3e50; font-weight: 600; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px;">Our Story</a>
+        <a href="#science" style="text-decoration: none; color: #2c3e50; font-weight: 600; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px;">Science</a>
+        <a href="#menu-start" style="text-decoration: none; color: #e74c3c; font-weight: 700; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px;">Menu</a>
     </nav>
 
-    <section id="story" style="padding: 60px 20px; text-align: center; background: white; margin-bottom: 20px; border-radius: 8px;">
-        <h2 style="color: #e74c3c;">From Harvard Lab to Your Table</h2>
-        <p>Founded by a Harvard Medical Researcher, we apply clinical precision to every recipe.</p>
+    <section id="story" style="padding: 80px 20px; text-align: center; background: white; margin: 20px 0; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+        <h2 style="color: #2c3e50; font-size: 2em; margin-bottom: 25px;">From Harvard Lab to Your Table</h2>
+        <p style="max-width: 800px; margin: 0 auto; line-height: 1.8; color: #4a5568;">
+            Founded by a Harvard Medical Researcher, SIZZLE & DRIZZLE was born to bridge the gap between high-performance lifestyles and authentic Taiwanese flavors. We apply clinical precision to every recipe.
+        </p>
+    </section>
+
+    <section id="science" style="padding: 80px 20px; background: #2d3748; color: white; border-radius: 12px; margin-bottom: 40px;">
+        <div style="text-align: center; margin-bottom: 50px;">
+            <h2 style="font-size: 2em; margin-bottom: 10px;">The Nutritional Science</h2>
+            <p style="color: #a0aec0; font-size: 1em;">Data-driven fuel for high-performance minds.</p>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; max-width: 1100px; margin: 0 auto;">
+            <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px; border-top: 4px solid #3498db;">
+                <h3 style="color: #3498db;">Lean Protein</h3>
+                <p style="font-size: 0.9em; color: #cbd5e0;">Provides amino acids required for tissue repair and neurotransmitter synthesis.</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px; border-top: 4px solid #48bb78;">
+                <h3 style="color: #48bb78;">Dietary Fiber</h3>
+                <p style="font-size: 0.9em; color: #cbd5e0;">Essential for a healthy gut microbiome and regulating blood glucose levels.</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px; border-top: 4px solid #f6e05e;">
+                <h3 style="color: #f6e05e;">Complex Starch</h3>
+                <p style="font-size: 0.9em; color: #cbd5e0;">Ensures stable blood sugar levels, preventing the infamous "food coma."</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px; border-top: 4px solid #ed8936;">
+                <h3 style="color: #ed8936;">Healthy Fats</h3>
+                <p style="font-size: 0.9em; color: #cbd5e0;">Supports cognitive function and the absorption of fat-soluble vitamins.</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px; border-top: 4px solid #9f7aea;">
+                <h3 style="color: #9f7aea;">Micronutrients</h3>
+                <p style="font-size: 0.9em; color: #cbd5e0;">Vitamins acting as cofactors for DNA repair and immune regulation.</p>
+            </div>
+        </div>
     </section>
 
     <div id="menu-start" class="app-layout">
@@ -120,7 +131,7 @@
         </div>
 
         <section id="checkout-section" class="order-section">
-            <h2 style="margin-top: 0; text-align: center; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px;">Your Order</h2>
+            <h2 style="margin-top: 0; text-align: center; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; color: #2c3e50;">Your Order</h2>
             <ul id="cart-items">
                 <li style="color: #95a5a6; justify-content: center; border: none;">Your cart is empty</li>
             </ul>
@@ -150,14 +161,15 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, collection, getDocs, addDoc, serverTimestamp, doc, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-        // ⚠️ 請在此處填入你的真實 Firebase Config ⚠️
-        const firebaseConfig = { 		
+        // ⚠️ 請填入你的 Firebase Config ⚠️
+        const firebaseConfig = { 
 		apiKey: "AIzaSyACsOsE467bbOGrHdkxjUhcdPL-i_F_rNM",
 		authDomain: "sizzle-drizzle-restaurant.firebaseapp.com",
 		projectId: "sizzle-drizzle-restaurant",
 		storageBucket: "sizzle-drizzle-restaurant.firebasestorage.app",
 		messagingSenderId: "713438474887",
-		appId: "1:713438474887:web:f4a1514105ad9beac7be22" };
+		appId: "1:713438474887:web:f4a1514105ad9beac7be22"
+        };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
@@ -169,7 +181,8 @@
             await loadMenu();
             await loadPickupSlots();
         }
-		async function loadMenu() {
+
+        async function loadMenu() {
             const categories = [
                 { path: 'menu/01_fresh_produce/items', containerId: 'content-fresh' },
                 { path: 'menu/02_chinese_dishes/items', containerId: 'content-chef' }
@@ -180,72 +193,15 @@
                     const querySnapshot = await getDocs(collection(db, cat.path));
                     if (!querySnapshot.empty) {
                         querySnapshot.forEach((doc) => {
-                            // 獲取數據並注入集合路徑，以便後續 Transaction 準確定位
                             const itemData = doc.data();
                             itemData.collectionPath = cat.path; 
                             renderMenuItem(container, itemData, doc.id);
                         });
                     } else {
-                        container.innerHTML = "<p style='color:#7f8c8d; font-size:0.9em;'>Menu coming soon...</p>";
+                        container.innerHTML = "<p>Menu coming soon...</p>";
                     }
-                } catch (error) {
-                    console.error("Error loading menu: ", error);
-                }
+                } catch (error) { console.error(error); }
             }
-        }
-
-async function loadPickupSlots() {
-            const select = document.getElementById('pickup-time');
-            const submitBtn = document.getElementById('submit-order');
-            const nowET = new Date(new Date().toLocaleString("en-US", {timeZone: "America/New_York"}));
-            const currentTimeStr = (nowET.getHours() < 10 ? '0' : '') + nowET.getHours() + (nowET.getMinutes() < 10 ? '0' : '') + nowET.getMinutes();
-            
-            select.innerHTML = '<option value="">Select Pickup Time...</option>'; // 清空重置
-
-            try {
-                const querySnapshot = await getDocs(collection(db, "pickup_slots"));
-                const slots = [];
-                querySnapshot.forEach((doc) => slots.push({ id: doc.id, ...doc.data() }));
-                slots.sort((a, b) => a.id.localeCompare(b.id)); 
-
-                let validSlotsFound = false;
-
-                slots.forEach((slot) => {
-                    const isFuture = slot.id > currentTimeStr;
-                    const isAvailable = slot.is_active && slot.current_booked < slot.max_capacity;
-
-                    if (isFuture) {
-                        const option = document.createElement('option');
-                        option.value = slot.id;
-                        let hour = parseInt(slot.id.substring(0,2));
-                        const ampm = hour >= 12 ? 'PM' : 'AM';
-                        hour = hour % 12 || 12;
-                        
-                        if (isAvailable) {
-                            option.textContent = `${hour}:${slot.id.substring(2,4)} ${ampm} (${slot.max_capacity - slot.current_booked} items left)`;
-                            validSlotsFound = true;
-                        } else {
-                            option.textContent = `${hour}:${slot.id.substring(2,4)} ${ampm} (FULL - Contact Staff)`;
-                            option.disabled = true; // 讓它看得到但不能選
-                        }
-                        select.appendChild(option);
-                    }
-                });
-
-                // 【邏輯優化】：如果沒有任何可用時段，執行邊界防禦
-                if (!validSlotsFound) {
-                    const option = document.createElement('option');
-                    option.textContent = "⚠️ ALL SLOTS FULL / CLOSED";
-                    option.value = "CLOSED"; // 給予一個特殊標記值
-                    select.appendChild(option);
-                    select.value = "CLOSED";
-                    
-                    // 直接停用下單按鈕，並更改文字作為營銷引導
-                    submitBtn.disabled = true;
-                    submitBtn.style.backgroundColor = "#95a5a6";
-                    submitBtn.textContent = "Orders Closed - Call 617-xxx-xxxx"; 
-                }
-            } catch (error) { console.error(error); }
         }
 
         function renderMenuItem(container, data, id) {
@@ -255,7 +211,6 @@ async function loadPickupSlots() {
             const isOutOfStock = data.stock <= 0;
             const descHTML = data.description ? `<p style="font-size: 0.9em; color: #7f8c8d; margin: 8px 0;">${data.description}</p>` : '';
             
-            // 構建營養標籤
             let tagsHTML = '<div class="nutrient-badges">';
             ['Protein', 'Fiber', 'Starch', 'Fats'].forEach(tag => {
                 if(data.nutrition_tags && data.nutrition_tags[tag]) {
@@ -279,6 +234,47 @@ async function loadPickupSlots() {
                     `}
                 </div>`;
             container.appendChild(itemArticle);
+        }
+
+        async function loadPickupSlots() {
+            const select = document.getElementById('pickup-time');
+            const submitBtn = document.getElementById('submit-order');
+            const nowET = new Date(new Date().toLocaleString("en-US", {timeZone: "America/New_York"}));
+            const currentTimeStr = (nowET.getHours() < 10 ? '0' : '') + nowET.getHours() + (nowET.getMinutes() < 10 ? '0' : '') + nowET.getMinutes();
+            
+            select.innerHTML = '<option value="">Select Pickup Time...</option>';
+
+            try {
+                const querySnapshot = await getDocs(collection(db, "pickup_slots"));
+                const slots = [];
+                querySnapshot.forEach((doc) => slots.push({ id: doc.id, ...doc.data() }));
+                slots.sort((a, b) => a.id.localeCompare(b.id)); 
+
+                let validSlotsFound = false;
+                slots.forEach((slot) => {
+                    if (slot.id > currentTimeStr) {
+                        const option = document.createElement('option');
+                        option.value = slot.id;
+                        let hour = parseInt(slot.id.substring(0,2));
+                        const ampm = hour >= 12 ? 'PM' : 'AM';
+                        hour = hour % 12 || 12;
+                        
+                        if (slot.is_active && slot.current_booked < slot.max_capacity) {
+                            option.textContent = `${hour}:${slot.id.substring(2,4)} ${ampm} (${slot.max_capacity - slot.current_booked} items left)`;
+                            validSlotsFound = true;
+                        } else {
+                            option.textContent = `${hour}:${slot.id.substring(2,4)} ${ampm} (FULL)`;
+                            option.disabled = true;
+                        }
+                        select.appendChild(option);
+                    }
+                });
+
+                if (!validSlotsFound) {
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = "Orders Closed";
+                }
+            } catch (error) { console.error(error); }
         }
 
         window.addToCart = function(id, name, price, stock, path) {
@@ -307,59 +303,40 @@ async function loadPickupSlots() {
             cartList.innerHTML = window.cart.length === 0 ? '<li>Cart is empty</li>' : '';
             window.cart.forEach((item, index) => {
                 const li = document.createElement('li');
-                li.innerHTML = `<div><b>${item.name}</b><br>$${item.price.toFixed(2)} x ${item.quantity}</div><div>$${(item.price * item.quantity).toFixed(2)} <button onclick="removeFromCart(${index})">X</button></div>`;
+                li.innerHTML = `<div><b>${item.name}</b><br>$${item.price.toFixed(2)} x ${item.quantity}</div><div><button onclick="removeFromCart(${index})">X</button></div>`;
                 cartList.appendChild(li);
             });
             document.getElementById('total-price').textContent = window.total.toFixed(2);
             document.getElementById('mobile-total-price').textContent = window.total.toFixed(2);
-            document.getElementById('mobile-checkout-btn').style.display = (window.innerWidth < 900 && window.cart.length > 0) ? 'block' : 'none';
         }
 
         document.getElementById('submit-order').addEventListener('click', async () => {
             const name = document.getElementById('customer-name').value.trim();
             const phone = document.getElementById('customer-phone').value.trim().replace(/\D/g, '');
             const pickup = document.getElementById('pickup-time').value;
-            if (window.cart.length === 0 || !pickup || !name || phone.length < 10) { alert("Complete Name, Phone, and Pickup Time."); return; }
+            if (window.cart.length === 0 || !pickup || !name || phone.length < 10) { alert("Check fields!"); return; }
 
             const btn = document.getElementById('submit-order');
             btn.disabled = true;
-            btn.textContent = "Processing...";
-
             try {
-                // 使用 Transaction 確保庫存與產能檢查的原子性
                 await runTransaction(db, async (transaction) => {
-                    // 1. 檢查時段總產能
                     const slotRef = doc(db, "pickup_slots", pickup);
                     const slotDoc = await transaction.get(slotRef);
                     const totalItems = window.cart.reduce((s, i) => s + i.quantity, 0);
                     
-                    if (slotDoc.data().current_booked + totalItems > slotDoc.data().max_capacity) {
-                        throw "Selected time slot is now full. Please select another time.";
-                    }
+                    if (slotDoc.data().current_booked + totalItems > slotDoc.data().max_capacity) throw "Full!";
 
-                    // 2. 檢查各項商品庫存
-                    const stockUpdates = [];
                     for (const item of window.cart) {
                         const itemRef = doc(db, `${item.collectionPath}`, item.id);
                         const itemDoc = await transaction.get(itemRef);
-                        if (itemDoc.data().stock < item.quantity) {
-                            throw `Sorry, ${item.name} just sold out!`;
-                        }
-                        stockUpdates.push({ ref: itemRef, nextStock: itemDoc.data().stock - item.quantity });
+                        transaction.update(itemRef, { stock: itemDoc.data().stock - item.quantity });
                     }
-
-                    // 3. 執行所有寫入動作
                     transaction.update(slotRef, { current_booked: slotDoc.data().current_booked + totalItems });
-                    stockUpdates.forEach(u => transaction.update(u.ref, { stock: u.nextStock }));
-                    
-                    const orderData = { customer: name, phone, pickup_slot: pickup, items: window.cart, totalAmount: window.total, status: "new", createdAt: serverTimestamp() };
-                    transaction.set(doc(collection(db, "orders")), orderData);
+                    transaction.set(doc(collection(db, "orders")), { customer: name, phone, pickup_slot: pickup, items: window.cart, totalAmount: window.total, status: "new", createdAt: serverTimestamp() });
                 });
-
-                alert("Success! Order placed.");
-                window.cart = []; window.total = 0; updateCartUI();
-                document.getElementById('customer-name').value = ''; document.getElementById('customer-phone').value = '';
-            } catch (err) { alert(err); } finally { btn.disabled = false; btn.textContent = "Submit Order"; }
+                alert("Success!");
+                window.location.reload();
+            } catch (err) { alert(err); btn.disabled = false; }
         });
 
         initApp();
