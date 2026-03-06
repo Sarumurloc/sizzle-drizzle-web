@@ -257,50 +257,6 @@ async function loadPickupSlots() {
             container.appendChild(itemArticle);
         }
 
-        async function loadPickupSlots() {
-            const select = document.getElementById('pickup-time');
-            const nowET = new Date(new Date().toLocaleString("en-US", {timeZone: "America/New_York"}));
-            const currentTimeStr = (nowET.getHours() < 10 ? '0' : '') + nowET.getHours() + (nowET.getMinutes() < 10 ? '0' : '') + nowET.getMinutes();
-            
-            try {
-                const querySnapshot = await getDocs(collection(db, "pickup_slots"));
-                const slots = [];
-                querySnapshot.forEach((doc) => slots.push({ id: doc.id, ...doc.data() }));
-                slots.sort((a, b) => a.id.localeCompare(b.id)); 
-
-                let validSlotsFound = false;
-
-                slots.forEach((slot) => {
-                    const isFuture = slot.id > currentTimeStr;
-                    const isAvailable = slot.is_active && slot.current_booked < slot.max_capacity;
-
-                    if (isFuture) {
-                        const option = document.createElement('option');
-                        option.value = slot.id;
-                        let hour = parseInt(slot.id.substring(0,2));
-                        const ampm = hour >= 12 ? 'PM' : 'AM';
-                        hour = hour % 12 || 12;
-                        
-                        if (isAvailable) {
-                            option.textContent = `${hour}:${slot.id.substring(2,4)} ${ampm} (${slot.max_capacity - slot.current_booked} items left)`;
-                            validSlotsFound = true;
-                        } else {
-                            option.textContent = `${hour}:${slot.id.substring(2,4)} ${ampm} (Fully Booked - Contact Staff)`;
-                            option.disabled = true;
-                        }
-                        select.appendChild(option);
-                    }
-                });
-
-                if (!validSlotsFound) {
-                    const option = document.createElement('option');
-                    option.textContent = "Orders Closed - Please contact us for special requests";
-                    option.disabled = true;
-                    select.appendChild(option);
-                }
-            } catch (error) { console.error(error); }
-        }
-
         window.addToCart = function(id, name, price, stock, path) {
             const qty = parseInt(document.getElementById(`qty-${id}`).value);
             if (isNaN(qty) || qty <= 0) return;
