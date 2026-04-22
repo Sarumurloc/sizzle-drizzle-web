@@ -3,16 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIZZLE & DRIZZLE | Healthy Meals & Farm Fresh Produce Cambridge</title>
-    <meta name="description" content="Chef-curated healthy Taiwanese meals & organic farm produce near Harvard. Sourced by a Medical PhD chef. Best prices in Cambridge.">
+    <title>SIZZLE & DRIZZLE | RD-Led Healthy Meals & Farm Market</title>
+    <meta name="description" content="Experience the warmth of home-cooked Taiwanese meals, designed with medical precision by a PhD & future Registered Dietitian near Harvard.">
+    <meta name="keywords" content="Registered Dietitian Chef, Healthy Taiwanese Food Cambridge, PhD led kitchen, Farm fresh produce Harvard, Co-op Market">
     
-    <meta name="keywords" content="Harvard food, Cambridge fresh produce, Taiwanese food MA, Healthy meal prep">
+    <meta property="og:title" content="SIZZLE & DRIZZLE | Healthy Kitchen & Co-op Fresh">
+    <meta property="og:image" content="logo.png">
+    <link rel="icon" type="image/png" href="logo.png">
 
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "Restaurant",
       "name": "SIZZLE & DRIZZLE",
+      "knowsAbout": ["Clinical Nutrition", "Taiwanese Cuisine", "Food Science"],
+      "description": "Medical PhD & RD-led kitchen serving high-performance meals and local farm produce co-op.",
       "address": {
         "@type": "PostalAddress",
         "streetAddress": "1220 Massachusetts Ave",
@@ -21,40 +26,55 @@
         "postalCode": "02138",
         "addressCountry": "US"
       },
-      "servesCuisine": "Healthy Taiwanese, Organic Produce",
+      "servesCuisine": "Healthy Taiwanese, Organic Farm Produce",
       "priceRange": "$$"
     }
     </script>
 
     <style>
-        :root { --primary: #2c3e50; --accent: #e74c3c; --fresh: #27ae60; --highlight: #f1c40f; }
+        :root { --primary: #2c3e50; --accent: #e74c3c; --fresh: #2e7d32; --highlight: #f1c40f; }
+        
         body { font-family: 'Segoe UI', sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; background-color: #f4f7f6; color: #333; scroll-behavior: smooth; }
         
-        /* 加深海報背景，文字更清晰 */
+        /* Header：深色海報背景 */
         header { 
             text-align: center; padding: 100px 20px; 
             background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('poster.jpg'); 
             background-size: cover; background-position: center; border-radius: 15px; color: white; margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
-        header h1 { font-size: 3em; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        header h1 { font-size: 3.2em; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); margin: 0; }
 
-        nav { position: sticky; top: 0; background: var(--primary); z-index: 1000; display: flex; justify-content: center; gap: 30px; padding: 15px; border-radius: 0 0 15px 15px; }
-        .nav-link { text-decoration: none; color: white; font-weight: 600; font-size: 0.9em; text-transform: uppercase; transition: 0.3s; }
+        /* 導覽列：深色高對比 */
+        nav { position: sticky; top: 0; background: var(--primary); z-index: 1000; display: flex; justify-content: center; gap: 30px; padding: 18px; border-radius: 0 0 15px 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .nav-link { text-decoration: none; color: white; font-weight: 600; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
         .nav-link:hover { color: var(--highlight); }
 
+        /* 版面結構 */
         .app-layout { display: flex; flex-direction: column; gap: 30px; margin-top: 30px; }
         .menu-area { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; flex: 2; }
         .category-column { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .menu-category { color: var(--accent); border-bottom: 3px solid var(--accent); padding-bottom: 10px; margin-bottom: 20px; }
+        .menu-category { font-size: 1.5em; color: var(--accent); border-bottom: 3px solid var(--accent); padding-bottom: 10px; margin-bottom: 20px; }
         
-        /* 聯繫區塊 (廣告頁面的核心) */
-        .contact-card { background: var(--primary); color: white; padding: 30px; border-radius: 15px; text-align: center; position: sticky; top: 80px; height: fit-content; flex: 1; }
-        .cta-button { display: block; background: var(--accent); color: white; padding: 15px; margin: 15px 0; border-radius: 50px; text-decoration: none; font-weight: 800; transition: 0.3s; }
-        .cta-button.whatsapp { background: #25d366; }
+        /* 科學區塊卡片樣式 */
+        .science-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
+        .science-card { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px; border-top: 4px solid var(--primary); }
 
-        .badge { padding: 3px 8px; border-radius: 10px; font-size: 0.65em; font-weight: bold; color: white; margin-right: 5px; text-transform: uppercase; }
-        .badge.protein { background: #3498db; } .badge.fiber { background: #2ecc71; } .badge.carbs { background: var(--highlight); color: #333; }
-        
+        /* 聯繫區塊：自然木質調 */
+        .contact-card { 
+            background-color: #5d4037; 
+            background-image: linear-gradient(rgba(93, 64, 55, 0.8), rgba(93, 64, 55, 0.9)), url('https://www.transparenttextures.com/patterns/wood-pattern.png');
+            color: #fefefe; padding: 45px 30px; border-radius: 20px; text-align: center; 
+            position: sticky; top: 90px; height: fit-content; flex: 1; 
+            border-bottom: 8px solid #3e2723; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .cta-button { display: block; background: var(--accent); color: white; padding: 18px; margin: 20px 0; border-radius: 50px; text-decoration: none; font-weight: 800; transition: 0.3s; }
+        .cta-button.whatsapp { background: var(--fresh); }
+
+        /* 營養標籤 */
+        .badge { padding: 3px 8px; border-radius: 10px; font-size: 0.65em; font-weight: 800; color: white; text-transform: uppercase; margin-right: 5px; }
+        .badge.protein { background: #3498db; } .badge.fiber { background: var(--fresh); } .badge.carbs { background: var(--highlight); color: #333; }
+
         @media (min-width: 900px) { .app-layout { flex-direction: row; } }
     </style>
 </head>
@@ -62,38 +82,70 @@
 
     <header>
         <h1>SIZZLE & DRIZZLE</h1>
-        <p>Healthy Taiwanese Meals & Member-Price Farm Fresh Produce. Curated by a Medical PhD Chef.</p>
-        <p style="color: var(--highlight); font-weight: bold;">📍 1220 Massachusetts Ave, Cambridge</p>
+        <p>A PhD & RD’s kitchen where data meets deliciousness. Sharing the warmth of home-cooked Taiwanese meals with the Harvard community.</p>
+        <p style="color: var(--highlight); font-weight: bold; letter-spacing: 1px;">📍 1220 Massachusetts Ave, Cambridge</p>
     </header>
 
     <nav>
-        <a href="#story" class="nav-link">Our Story</a>
+        <a href="#story" class="nav-link">Chef's Story</a>
         <a href="#menu-area" class="nav-link">Menu & Market</a>
-        <a href="#contact-area" class="nav-link" style="color: var(--highlight);">Contact Now</a>
+        <a href="#contact-area" class="nav-link" style="color: var(--highlight);">Order via WhatsApp</a>
     </nav>
+
+    <section id="story" style="padding: 60px 20px; text-align: center; background: white; margin: 30px 0; border-radius: 15px;">
+        <h2 style="color: var(--primary);">More than a Kitchen</h2>
+        <p style="max-width: 850px; margin: 0 auto; line-height: 1.8; color: #555;">
+            Founded by a Medical PhD and future Registered Dietitian, we handle the science so you can focus on the flavor. Our meals are designed with clinical precision, yet served with the warmth of home.
+        </p>
+    </section>
+
+    <section id="science" style="padding: 80px 20px; background: #2d3748; color: white; border-radius: 15px; margin-bottom: 40px;">
+        <div style="text-align: center; margin-bottom: 40px;">
+            <h2 style="font-size: 2em; color: var(--highlight);">The Science of Wellness</h2>
+            <p style="opacity: 0.8;">Delicious meals with data-driven benefits. We handle the science; you enjoy the taste.</p>
+        </div>
+        <div class="science-grid">
+            <div class="science-card" style="border-color: #3498db;">
+                <h3 style="color: #3498db;">Restorative Proteins</h3>
+                <p style="font-size: 0.9em; color: #cbd5e0;">High-bioavailability sources to fuel your recovery without the heavy feeling.</p>
+            </div>
+            <div class="science-card" style="border-color: #2ecc71;">
+                <h3 style="color: #2ecc71;">Gut-Loving Fiber</h3>
+                <p style="font-size: 0.9em; color: #cbd5e0;">Carefully selected microbiome-supportive prebiotics for digestive longevity.</p>
+            </div>
+            <div class="science-card" style="border-color: var(--highlight);">
+                <h3 style="color: var(--highlight);">Steady-Energy Carbs</h3>
+                <p style="font-size: 0.9em; color: #cbd5e0;">Low-glycemic selections to keep you focused and satisfied all afternoon.</p>
+            </div>
+        </div>
+    </section>
 
     <div id="menu-area" class="app-layout">
         <div class="menu-area">
             <div class="category-column">
                 <h2 class="menu-category">🍳 Chef's Kitchen</h2>
                 <div id="content-chef"></div>
+                <p style="font-size: 0.85em; color: #7f8c8d; margin-top: 20px; font-style: italic;">* Designed for high-performance minds. Transparent nutrition in every bite.</p>
             </div>
-            <div class="category-column">
-                <h2 class="menu-category" style="color: var(--fresh); border-color: var(--fresh);">🥬 Farm Fresh Produce</h2>
+
+            <div class="category-column" style="border-left: 5px solid var(--fresh);">
+                <h2 class="menu-category" style="color: var(--fresh); border-color: var(--fresh);">🥬 Co-op Fresh Corner</h2>
+                <p style="font-size: 0.9em; color: #555; font-style: italic; margin-bottom: 15px;">"Sharing our kitchen’s access to local farm-fresh produce with our neighbors."</p>
                 <div id="content-fresh"></div>
+                <div style="background: #eef9f1; padding: 15px; border-radius: 8px; margin-top: 20px; font-size: 0.85em; color: #2d5a27;">
+                    <strong>Neighborly Note:</strong> These items are sourced through our farm co-op membership to bring you better prices and fresher quality than supermarkets. No cooking needed—just pick up and enjoy!
+                </div>
             </div>
         </div>
 
-        <aside id="contact-area" class="contact-card">
-            <h2 style="color: var(--highlight);">Order Now</h2>
-            <p style="font-size: 0.9em; opacity: 0.8;">We source and cook fresh daily. Contact us to reserve your meal or produce pickup.</p>
-            
-            <a href="https://wa.me/你的電話" class="cta-button whatsapp">💬 Order via WhatsApp</a>
-            <a href="tel:你的電話" class="cta-button">📞 Call to Pre-order</a>
-            
-            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
-                <p><b>Pickup:</b> 11AM - 8PM Daily</p>
-                <p style="font-size: 0.8em; color: var(--highlight);">1220 Massachusetts Ave, Cambridge</p>
+        <aside class="contact-card" id="contact-area">
+            <h2 style="margin-top: 0;">Order & Inquire</h2>
+            <p>We source and prep daily in small batches to ensure PhD-level quality. Message our kitchen directly to reserve your meal or Co-op produce.</p>
+            <a href="https://wa.me/16170000000" class="cta-button whatsapp">💬 Order via WhatsApp</a>
+            <a href="tel:16170000000" class="cta-button">📞 Call Our Kitchen</a>
+            <div style="margin-top: 40px; text-align: left; font-size: 0.9em; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 25px;">
+                <p><strong style="color: #f1c40f;">Pickup Hours:</strong><br>11:00 AM - 8:00 PM Daily</p>
+                <p><strong style="color: #f1c40f;">Location:</strong><br>1220 Massachusetts Ave, Cambridge</p>
             </div>
         </aside>
     </div>
@@ -102,7 +154,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-        // 從截圖獲得的正確配置
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyACsOsE467bbOGrHdkxjUhcdPL-i_F_rNM",
             authDomain: "sizzle-drizzle-restaurant.firebaseapp.com",
@@ -123,21 +175,19 @@
                 querySnapshot.forEach((doc) => {
                     const item = doc.data();
                     const itemDiv = document.createElement('div');
-                    itemDiv.className = 'menu-item';
+                    itemDiv.style = "padding:12px 0; border-bottom:1px dashed #eee;";
                     
-                    // 容錯標籤邏輯
                     let tags = '';
                     if(item.nutrition_tags?.Protein) tags += '<span class="badge protein">Protein</span>';
                     if(item.nutrition_tags?.Fiber) tags += '<span class="badge fiber">Fiber</span>';
                     if(item.nutrition_tags?.Starch) tags += '<span class="badge carbs">Carbs</span>';
-                    // 匹配截圖中的 Fats_Lipids
                     if(item.nutrition_tags?.Fats_Lipids || item.nutrition_tags?.Fats) tags += '<span class="badge" style="background:#e67e22">Fats</span>';
 
                     itemDiv.innerHTML = `
-                        <div style="display:flex;justify-content:space-between;font-weight:bold;">
-                            <span>${item.name}</span><span>$${item.base_price}</span>
+                        <div style="display:flex;justify-content:space-between;font-weight:bold;color:var(--primary);">
+                            <span>${item.name}</span><span>$${item.base_price.toFixed(2)}</span>
                         </div>
-                        <p style="font-size:0.8em;color:#7f8c8d;margin:5px 0;">${item.description || ''}</p>
+                        <p style="font-size:0.85em;color:#666;margin:5px 0;">${item.description || ''}</p>
                         <div>${tags}</div>
                     `;
                     container.appendChild(itemDiv);
